@@ -6,20 +6,22 @@ import java.util.TreeSet;
 public class Usuario {
 	private String nombre;
 	private String dni;
-	private String ConstaseñaUsuario;
+	private String ContraseñaUsuario;
 	private int saldoTotal;
 	private Date fecha_nac;
+	private Provincia provincia;
 	private TreeSet<Cuenta> cuentasUsuario;
 	
 	
-	public Usuario(String nombre, String dni, String constaseñaUsuario, int saldoTotal, Date fecha_nac,
+	public Usuario(String nombre, String dni, String contraseñaUsuario, int saldoTotal, Date fecha_nac, Provincia provincia,
 			TreeSet<Cuenta> cuentasUsuario) {
 		super();
 		this.nombre = nombre;
 		this.dni = dni;
-		ConstaseñaUsuario = constaseñaUsuario;
+		ContraseñaUsuario = contraseñaUsuario;
 		this.saldoTotal = saldoTotal;
 		this.fecha_nac = fecha_nac;
+		this.provincia = provincia;
 		this.cuentasUsuario = cuentasUsuario;
 	}
 
@@ -44,13 +46,13 @@ public class Usuario {
 	}
 
 
-	public String getConstaseñaUsuario() {
-		return ConstaseñaUsuario;
+	public String getContraseñaUsuario() {
+		return ContraseñaUsuario;
 	}
 
 
-	public void setConstaseñaUsuario(String constaseñaUsuario) {
-		ConstaseñaUsuario = constaseñaUsuario;
+	public void setContraseñaUsuario(String contraseñaUsuario) {
+		ContraseñaUsuario = contraseñaUsuario;
 	}
 
 
@@ -82,6 +84,18 @@ public class Usuario {
 	public void setCuentasUsuario(TreeSet<Cuenta> cuentasUsuario) {
 		this.cuentasUsuario = cuentasUsuario;
 	}
+
+
+	public Provincia getProvincia() {
+		return provincia;
+	}
+
+
+	public void setProvincia(Provincia provincia) {
+		this.provincia = provincia;
+	}
+	
+	
 	
 	
 	

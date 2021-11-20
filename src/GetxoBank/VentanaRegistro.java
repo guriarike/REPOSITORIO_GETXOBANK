@@ -1,6 +1,8 @@
 package GetxoBank;
 
 import java.awt.BorderLayout;
+import java.util.*;
+import java.text.*;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -9,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
@@ -32,9 +35,10 @@ public class VentanaRegistro extends JFrame {
 	private JTextField textDni;
 	private int numeroDeCuentas,saldoUsuario,telefono;
 	private Provincia p;
-	private String email,nombre,apellidos,dni,contraseña,fechaNacimiento;
+	private String nombre,dni,contraseña;
+	private Date fechaNacimiento;
 	private JFrame ventanaActual;
-	
+	private TreeSet<Cuenta> cuentasUsuario;
 
 	/**
 	 * Launch the application.
@@ -152,14 +156,17 @@ public class VentanaRegistro extends JFrame {
 		panelCentral.add(comboProvincia);
 		
 		ventanaActual = this;
-		email= textEmail.getText();
 		nombre = textNombre.getText();
-		apellidos= textApellidos.getText();
 		dni= textDni.getText();
 		contraseña = textContraseña.getText();			
 		numeroDeCuentas= 0;
-		Object fch= comboAño.getSelectedItem();
-		fechaNacimiento = fch.toString();
+		String date = comboAño.getSelectedItem().toString();
+		try {
+			fechaNacimiento = new SimpleDateFormat("yyyy").parse(date);
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		saldoUsuario=0;
 		
 		 
@@ -242,7 +249,7 @@ public class VentanaRegistro extends JFrame {
 		**/
 		
 		
-		Usuario u = new Usuario(email, nombre, apellidos, dni, fechaNacimiento, contraseña, p, numeroDeCuentas, saldoUsuario,  telefono);
+		Usuario u = new Usuario(nombre, dni, contraseña, saldoUsuario, fechaNacimiento,  p, cuentasUsuario);
 		System.out.println(u);
 		return u;
 		//Usuario u = new Usuario();
