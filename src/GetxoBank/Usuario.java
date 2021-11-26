@@ -11,19 +11,12 @@ public class Usuario {
 	private Date fecha_nac;
 	private Provincia provincia;
 	private TreeSet<Cuenta> cuentasUsuario;
-	
-	
-	public Usuario(String nombre, String dni, String contraseñaUsuario, int saldoTotal, Date fecha_nac, Provincia provincia,
-			TreeSet<Cuenta> cuentasUsuario) {
-		super();
-		this.nombre = nombre;
-		this.dni = dni;
-		ContraseñaUsuario = contraseñaUsuario;
-		this.saldoTotal = saldoTotal;
-		this.fecha_nac = fecha_nac;
-		this.provincia = provincia;
-		this.cuentasUsuario = cuentasUsuario;
+
+
+	public Usuario(String e, String n, String d, String a, int t, String c, int i, String v) {
+		// TODO Auto-generated constructor stub
 	}
+
 
 
 	public String getNombre() {
@@ -94,6 +87,18 @@ public class Usuario {
 	public void setProvincia(Provincia provincia) {
 		this.provincia = provincia;
 	}
+
+
+
+	@Override
+	public String toString() {
+		return "Usuario [nombre=" + nombre + ", dni=" + dni + ", ContraseñaUsuario=" + ContraseñaUsuario
+				+ ", saldoTotal=" + saldoTotal + ", fecha_nac=" + fecha_nac + ", provincia=" + provincia
+				+ ", cuentasUsuario=" + cuentasUsuario + "]";
+	}
+
+
+	
 	
 	
 	
