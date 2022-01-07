@@ -25,7 +25,7 @@ public class VentanaLogiin extends JFrame {
 	private JPanel contentPane;
 	private JTextField textDni;
 	private String dni,contraseña;
-	private HashMap<String,Usuario>hmUsuarios;
+	private HashMap<String,Usuario> hmUsuarios;
 	private JPasswordField textContraseña;
 
 	/**
@@ -172,7 +172,7 @@ public class VentanaLogiin extends JFrame {
 		for (String clave:hmUsuarios.keySet()) {
 			
 			Usuario valor = hmUsuarios.get(clave);
-			if ( valor.getContraseñaUsuario() == contraseña) {
+			if ( valor.getPin() == contraseña) {
 				System.out.println("CONTRASEÑA CORRECTA ");
 				
 			}else {

@@ -54,7 +54,7 @@ public class VentanaGestion extends JFrame {
 
 		JLabel lblNewLabel = new JLabel("\u00DAltimas operaciones:");
 		panelIzq.add(lblNewLabel);
-		JComboBox comboUltimasOperaciones = new JComboBox();
+		JList comboUltimasOperaciones = new JList();
 		comboUltimasOperaciones.setToolTipText("");
 		panelIzq.add(comboUltimasOperaciones);
 

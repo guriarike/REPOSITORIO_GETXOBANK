@@ -38,7 +38,7 @@ public class VentanaRegistro extends JFrame {
 	private String nombre,dni,contraseña;
 	private Date fechaNacimiento;
 	private JFrame ventanaActual;
-	private TreeSet<Cuenta> cuentasUsuario;
+	private ArrayList<Cuenta> cuentasUsuario;
 
 	/**
 	 * Launch the application.
@@ -244,17 +244,17 @@ public class VentanaRegistro extends JFrame {
 		return correctoTelefono;
 	}
 	public Usuario crearUsuario() {
-		/**public Usuario(String email, String nombre, String apellidos, String dni, String fechaNacimiento,
-			String contraseñaUsuario, Provincia provincia, int numeroDeCuentas, int saldoUsuario, int telefono) 
+		/**public Usuario(String nom, String dni, String pin, int saldoTotal, Date fchaNcto , Provincia p, ArrayList<Cuenta> cuentasU)
 		**/
 		
 		
 		Usuario u = new Usuario(nombre, dni, contraseña, saldoUsuario, fechaNacimiento,  p, cuentasUsuario);
+		guardarUsuarioEnElHashMapDeLaVentanaLogin();
 		System.out.println(u);
 		return u;
 		//Usuario u = new Usuario();
 		
-		//Usuario  nuevoUsuario= new Usuario(textEmail.getText(), textNombre.getText(), textApellidos.getText(), textDni.getText(), comboAño.getSelectedItem(), comboProvincia.getSelectedItem(), 0, 0, 0);
+		//Usuario  nuevoUsuario= new Usuario (textEmail.getText(), textNombre.getText(), textApellidos.getText(), textDni.getText(), comboAño.getSelectedItem(), comboProvincia.getSelectedItem(), 0, 0, 0);
 		
 	}
 	public void llenarComboFechas(JComboBox<Integer> combo) {

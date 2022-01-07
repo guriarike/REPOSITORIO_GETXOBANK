@@ -1,20 +1,28 @@
 package GetxoBank;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TreeSet;
 
 public class Usuario {
 	private String nombre;
 	private String dni;
-	private String ContraseñaUsuario;
+	private String pin;
 	private int saldoTotal;
 	private Date fecha_nac;
 	private Provincia provincia;
-	private TreeSet<Cuenta> cuentasUsuario;
+	private ArrayList<Cuenta> cuentasUsuario;
 
 
-	public Usuario(String e, String n, String d, String a, int t, String c, int i, String v) {
+	public Usuario(String nom, String dni, String pin, int saldoTotal, Date fchaNcto , Provincia p, ArrayList<Cuenta> cuentasU) {
 		// TODO Auto-generated constructor stub
+		this.nombre = nom;
+		this.dni = dni;
+		this.pin = pin;
+		this.saldoTotal = saldoTotal;
+		this.fecha_nac = fchaNcto;
+		this.provincia = p;
+		this.cuentasUsuario = cuentasU;
 	}
 
 
@@ -39,13 +47,13 @@ public class Usuario {
 	}
 
 
-	public String getContraseñaUsuario() {
-		return ContraseñaUsuario;
+	public String getPin() {
+		return pin;
 	}
 
 
-	public void setContraseñaUsuario(String contraseñaUsuario) {
-		ContraseñaUsuario = contraseñaUsuario;
+	public void setPin(String pin) {
+		this.pin = pin;
 	}
 
 
@@ -69,12 +77,12 @@ public class Usuario {
 	}
 
 
-	public TreeSet<Cuenta> getCuentasUsuario() {
+	public ArrayList<Cuenta> getCuentasUsuario() {
 		return cuentasUsuario;
 	}
 
 
-	public void setCuentasUsuario(TreeSet<Cuenta> cuentasUsuario) {
+	public void setCuentasUsuario(ArrayList<Cuenta> cuentasUsuario) {
 		this.cuentasUsuario = cuentasUsuario;
 	}
 
@@ -92,7 +100,7 @@ public class Usuario {
 
 	@Override
 	public String toString() {
-		return "Usuario [nombre=" + nombre + ", dni=" + dni + ", ContraseñaUsuario=" + ContraseñaUsuario
+		return "Usuario [nombre=" + nombre + ", dni=" + dni + ", ContraseñaUsuario=" + pin
 				+ ", saldoTotal=" + saldoTotal + ", fecha_nac=" + fecha_nac + ", provincia=" + provincia
 				+ ", cuentasUsuario=" + cuentasUsuario + "]";
 	}

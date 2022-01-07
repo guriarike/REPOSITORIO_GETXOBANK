@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -12,90 +13,60 @@ import java.util.TreeSet;
 public class BD {
 	private static Connection con;
 	
-	public static void initBD(String nombreBD){
+	public static boolean initBD(String nombreBD){
 		
 		try {
-			Class.forName("org.sqlite.JDBC");
-			con = DriverManager.getConnection("jdbc:sqlite:"+nombreBD);
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+			System.out.println( "ConexiÃ³n abierta" );
+			Class.forName("org.sqlite.JDBC");  // Carga la clase de BD para sqlite
+			con = DriverManager.getConnection("jdbc:sqlite:" + nombreBD );
+			
+			Statement statement = con.createStatement();
+			String sent = "CREATE TABLE IF NOT EXISTS cuenta (nombre varchar(30), nCuenta INTEGER(10) PRIMARY KEY, tipo varchar(100), fecha DATE);";
+			statement.executeUpdate( sent );
+			sent = "CREATE TABLE IF NOT EXISTS usuario (nom varchar(20), dni char(9) PRIMARY KEY, pin INTEGER(4), saldoTotal INTEGER, fchaNcto DATE , provincia varchar(15), nCuenta INTEGER(10) FOREIGN KEY REFERENCES CUENTA(nCuenta));";
+			statement.executeUpdate( sent );
+			
+			return true;
+			
+		} catch(Exception e) {
 			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public static void cerrarConexion() {
+		try {
+			con.close();
+			System.out.println( "ConexiÃ³n cerrada" );
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	public static void closeBD() {
-		if(con!=null) {
-			try {
-				con.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	public static void crearTablas() {
-		String sent1 = "CREATE TABLE IF NOT EXISTS Persona(email String, nom String, dni String, apellido String, telefono intenger, contraseña string, añonacimiento integer, provincia String )";
-		Statement st = null;
-		
-		try {
-			st = con.createStatement();
-			st.executeUpdate(sent1);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			if(st!=null) {
-				try {
-					st.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+	public static ArrayList<Usuario> getUsuarios() {
+		try (Statement statement = con.createStatement()) {
+			ArrayList<Usuario> usuarios = new ArrayList<>();
+			String sent = "select * from usuario;";
+			System.out.println( sent );
+			ResultSet rs = statement.executeQuery( sent );
+			while( rs.next() ) { // Leer el resultset
+				String nombre = rs.getString("nombre");
+				String dni = rs.getString("dni");
+				String pin = rs.getString("pin");
+				int saldoTotal = rs.getInt("saldoTotal");
+				Date fchaNac = rs.getDate("fchaNcto");
+				String p = rs.getString("provincia");
+				
+				usuarios.add( new Usuario ( nombre, dni, pin, saldoTotal, fchaNac , Provincia.valueOf(p) , new ArrayList<Cuenta>() ) );
 				}
-			}
+			
+			return usuarios;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 	
-	public static TreeMap<String, Usuario> obtenerMapaUsuario(){
-		String sent = "SELECT * FROM Usuario";
-		Statement st = null;
-		TreeMap<String, Usuario> mapaUsuario = new TreeMap<>();
-		
-		try {
-			st = con.createStatement();
-			ResultSet rs = st.executeQuery(sent);
-			while(rs.next()) {
-				String e = rs.getString("email");
-				String n = rs.getString("nom");
-				String d = rs.getString("dni");
-				String a = rs.getString("apellido");
-				int t = rs.getInt("telefono");
-				String c = rs.getString("contrasenia");
-				int i = rs.getInt("anio nacimiento");
-				String v = rs.getString("provincia");
-				// el treeSet Cuenta no se como declararlo.
-				Usuario p = new Usuario(e, n, d, a, t, c, i, v);
-				mapaUsuario.put(d, p);
-			}
-			rs.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			if(st!=null) {
-				try {
-					st.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		return mapaUsuario;
-	}}
+	}
 	
 	

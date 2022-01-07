@@ -15,6 +15,12 @@ public class Cuenta {
 		this.saldo = saldo;
 		this.tipo = tipo;
 	}
+	
+	public Cuenta(int numeroTarjeta) {
+		this.numeroTarjeta = numeroTarjeta;
+	}
+	
+	
 	public String getNombre() {
 		return nombre;
 	}
@@ -40,6 +46,11 @@ public class Cuenta {
 		this.tipo = tipo;
 	}
 	
+	@Override
+	public String toString() {
+		return "Cuenta [nombre=" + nombre + ", numeroTarjeta=" + numeroTarjeta + ", saldo=" + saldo + ", tipo=" + tipo
+				+ "]";
+	}
 	//METODOS
 	/**
 	 * 
