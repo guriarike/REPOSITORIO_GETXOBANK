@@ -6,12 +6,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class BD {
 	private static Connection con;
+	private static Logger logger = Logger.getLogger( "BaseDatos" );
 	
 	public static boolean initBD(String nombreBD){
 		
@@ -21,7 +25,7 @@ public class BD {
 			con = DriverManager.getConnection("jdbc:sqlite:" + nombreBD );
 			
 			Statement statement = con.createStatement();
-			String sent = "CREATE TABLE IF NOT EXISTS cuenta (nombre varchar(30), nCuenta INTEGER(10) PRIMARY KEY, tipo varchar(100), fecha DATE);";
+			String sent = "CREATE TABLE IF NOT EXISTS cuenta (nombre varchar(30), nCuenta INTEGER(10) PRIMARY KEY,saldo Decimal(5,2) tipo varchar(100));";
 			statement.executeUpdate( sent );
 			sent = "CREATE TABLE IF NOT EXISTS usuario (nom varchar(20), dni char(9) PRIMARY KEY, pin INTEGER(4), saldoTotal INTEGER, fchaNcto DATE , provincia varchar(15), nCuenta INTEGER(10) FOREIGN KEY REFERENCES CUENTA(nCuenta));";
 			statement.executeUpdate( sent );
@@ -56,8 +60,9 @@ public class BD {
 				int saldoTotal = rs.getInt("saldoTotal");
 				Date fchaNac = rs.getDate("fchaNcto");
 				String p = rs.getString("provincia");
+				ArrayList<Cuenta> aCuentas = getCuentasDeUnUsuario(nombre);
 				
-				usuarios.add( new Usuario ( nombre, dni, pin, saldoTotal, fchaNac , Provincia.valueOf(p) , new ArrayList<Cuenta>() ) );
+				usuarios.add( new Usuario ( nombre, dni, pin, saldoTotal, fchaNac , Provincia.valueOf(p), aCuentas ) );
 				}
 			
 			return usuarios;
@@ -66,6 +71,78 @@ public class BD {
 			return null;
 		}
 	}
+	
+	public static ArrayList<Cuenta> getCuentas() {
+		try (Statement statement = con.createStatement()) {
+			ArrayList<Cuenta> cuentas = new ArrayList<>();
+			String sent = "select * from cuentas;";
+			logger.log( Level.INFO, "Statement: " + sent );
+			ResultSet rs = statement.executeQuery( sent );
+			while(rs.next()) {
+				String nombre = rs.getString("nombre");
+				int nTarjeta = rs.getInt("nCuenta");
+				double saldo = rs.getDouble("saldo");
+				String tipo = rs.getString("tipo");
+				cuentas.add(new Cuenta(nombre, nTarjeta, saldo, TipoCuenta.valueOf(tipo)));
+			}
+			return cuentas;
+		} catch (Exception e) {
+			logger.log( Level.SEVERE, "ExcepciÃ³n", e );
+			return null;
+		}
+		
+	}
+	
+	public static ArrayList<Cuenta>getCuentasDeUnUsuario(String nombre) {
+		ArrayList<Cuenta> cuentas = getCuentas();
+		ArrayList<Cuenta> cuentasUsuario = new ArrayList<Cuenta>();
+		for (Cuenta cuenta : cuentas) {
+			if(cuenta.getNombre() == nombre) {
+				cuentasUsuario.add(cuenta);
+			}
+		}
+		return cuentasUsuario;
+		
+	}
+	
+	public static boolean insertarUsuario(Usuario u) {
+		try (Statement st = con.createStatement()){
+			ArrayList<Cuenta> nuevaCuenta = new ArrayList<>();
+			String sent = "insert into usuario values ('" + u.getNombre() + "','" + u.getDni() + "','" + u.getPin() + "'," + u.getSaldoTotal() + ",'" + u.getFecha_nac() + "','" + u.getProvincia() + "'," + nuevaCuenta + ");";
+			logger.log( Level.INFO, "Statement: " + sent );
+			int insertados = st.executeUpdate( sent );
+			if (insertados!=1) return false;
+			ResultSet rs = st.getGeneratedKeys();
+			rs.next();
+			String pk = rs.getString( 2 );
+			u.setDni(pk);
+			return true;
+		} catch (Exception e) {
+			logger.log( Level.SEVERE, "Excepción", e );
+			return false;
+		}
+		
+	}
+	
+	
+	
+	public static boolean insertarNuevaCuenta(Cuenta c, Usuario u) {
+		try (Statement st = con.createStatement()) {
+			ArrayList<Usuario> usuarios = getUsuarios();
+			if(!usuarios.contains(u)) {
+				insertarUsuario(u);
+			}
+			if(c.getNombre() != u.getNombre()) return false;
+			String sent = "insert into Cuenta values('" + c.getNombre() + "', " + c.getNumeroTarjeta() + ", " + c.getSaldo() + ", '"+ c.getTipo()+ "');";
+			ResultSet rs = st.executeQuery(sent);
+			rs.next();
+			return true;
+		} catch (Exception e) {
+			logger.log( Level.SEVERE, "Excepción", e );
+			return false;
+		}
+	}
+	
 	
 	}
 	
