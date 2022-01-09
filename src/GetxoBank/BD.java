@@ -1,4 +1,5 @@
 package GetxoBank;
+import java.lang.Thread.State;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -22,7 +23,7 @@ public class BD {
 			con = DriverManager.getConnection("jdbc:sqlite:" + nombreBD );
 			
 			Statement statement = con.createStatement();
-			String sent = "CREATE TABLE IF NOT EXISTS cuenta (nombre varchar(30), nCuenta INTEGER(10) PRIMARY KEY,saldo Decimal(5,2) tipo varchar(100));";
+			String sent = "CREATE TABLE IF NOT EXISTS cuenta (nombre varchar(30), nCuenta INTEGER(10) PRIMARY KEY,saldo Decimal(7,2) tipo varchar(100));";
 			statement.executeUpdate( sent );
 			sent = "CREATE TABLE IF NOT EXISTS usuario (nom varchar(20), dni char(9) PRIMARY KEY, pin INTEGER(4), saldoTotal INTEGER, fchaNcto DATE , provincia varchar(15), nCuenta INTEGER(10) FOREIGN KEY REFERENCES CUENTA(nCuenta));";
 			statement.executeUpdate( sent );
@@ -82,6 +83,7 @@ public class BD {
 				String tipo = rs.getString("tipo");
 				cuentas.add(new Cuenta(nombre, nTarjeta, saldo, TipoCuenta.valueOf(tipo)));
 			}
+			statement.close();
 			return cuentas;
 		} catch (Exception e) {
 			logger.log( Level.SEVERE, "ExcepciÃ³n", e );
@@ -113,6 +115,7 @@ public class BD {
 			rs.next();
 			String pk = rs.getString( 2 );
 			u.setDni(pk);
+			st.close();
 			return true;
 		} catch (Exception e) {
 			logger.log( Level.SEVERE, "Excepción", e );
@@ -131,12 +134,33 @@ public class BD {
 			}
 			if(c.getNombre() != u.getNombre()) return false;
 			String sent = "insert into Cuenta values('" + c.getNombre() + "', " + c.getNumeroTarjeta() + ", " + c.getSaldo() + ", '"+ c.getTipo()+ "');";
-			ResultSet rs = st.executeQuery(sent);
-			rs.next();
+			int val = st.executeUpdate(sent);
+			logger.log(Level.INFO, val + "cuenta añadida");
+			st.close();
 			return true;
 		} catch (Exception e) {
 			logger.log( Level.SEVERE, "Excepción", e );
 			return false;
+		}
+	}
+	
+	public static void cambiarPin(Usuario u, String pin) throws SQLException {
+		Statement st = con.createStatement();
+		String nuevoPin = pin;
+		String sent = "update usuario set pin = '" + nuevoPin + "' where dni = '" + u.getDni() + "';";
+		ResultSet rrss = st.executeQuery(sent);
+		rrss.next();
+		st.close();
+	}
+	
+	public static void enviarDinero(Cuenta cPaga, Cuenta cCobra, double dinero) {
+		try (Statement st = con.createStatement()){
+			double saldoNuevo1 = cPaga.getSaldo() - dinero;
+			double saldoNuevo2 = cCobra.getSaldo() + dinero;
+			String sent = "update cuenta set saldo = " + saldoNuevo1 + " where nombre = '" + cPaga.getNombre() + "';";
+			String sent2 = "update cuenta set saldo = " + saldoNuevo2 + " where nombre = '" + cCobra.getNombre() + "';";
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 	}
 	
