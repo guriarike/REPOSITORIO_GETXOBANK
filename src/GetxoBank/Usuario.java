@@ -8,18 +8,21 @@ public class Usuario {
 	private String nombre;
 	private String dni;
 	private String pin;
-	private int saldoTotal;
+	private double saldoTotal;
 	private Date fecha_nac;
 	private Provincia provincia;
 	private ArrayList<Cuenta> cuentasUsuario;
 
 
-	public Usuario(String nom, String dni, String pin, int saldoTotal, Date fchaNcto , Provincia p, ArrayList<Cuenta> cuentasU) {
+	public Usuario(String nom, String dni, String pin, double saldoTotal, Date fchaNcto , Provincia p, ArrayList<Cuenta> cuentasU) {
 		// TODO Auto-generated constructor stub
 		this.nombre = nom;
 		this.dni = dni;
 		this.pin = pin;
-		this.saldoTotal = saldoTotal;
+		for (Cuenta cuenta : cuentasU) {
+			this.saldoTotal += cuenta.getSaldo();
+		}
+		
 		this.fecha_nac = fchaNcto;
 		this.provincia = p;
 		this.cuentasUsuario = cuentasU;
@@ -57,12 +60,12 @@ public class Usuario {
 	}
 
 
-	public int getSaldoTotal() {
+	public double getSaldoTotal() {
 		return saldoTotal;
 	}
 
 
-	public void setSaldoTotal(int saldoTotal) {
+	public void setSaldoTotal(double saldoTotal) {
 		this.saldoTotal = saldoTotal;
 	}
 
