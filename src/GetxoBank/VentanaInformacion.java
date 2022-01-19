@@ -9,67 +9,39 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.GridLayout;
+import java.util.ArrayList;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class VentanaInformacion extends JFrame {
-
-	private JPanel contentPane;
-	private JTextField textTrabajador;
-	ImageIcon imagenActual;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VentanaInformacion frame = new VentanaInformacion();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
+	private JTextField textInformacion;
+	private String informacionSobreGetxoBank;
 	public VentanaInformacion() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
 		
-		JPanel panelCentro = new JPanel();
-		contentPane.add(panelCentro, BorderLayout.CENTER);
-		panelCentro.setLayout(new GridLayout(0, 2, 0, 0));
+		JPanel panelSur = new JPanel();
+		getContentPane().add(panelSur, BorderLayout.SOUTH);
 		
-		JLabel lblImagenTrabajador = new JLabel("");
-		panelCentro.add(lblImagenTrabajador);
+		JButton btnVolver = new JButton("VOLVER");
+		panelSur.add(btnVolver);
 		
-		textTrabajador = new JTextField();
-		panelCentro.add(textTrabajador);
-		textTrabajador.setColumns(10);
+		JPanel panelCentral = new JPanel();
+		getContentPane().add(panelCentral, BorderLayout.CENTER);
+		panelCentral.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JPanel panelZurdo = new JPanel();
-		contentPane.add(panelZurdo, BorderLayout.WEST);
+		textInformacion = new JTextField();
+		textInformacion.setEditable(false);
+		panelCentral.add(textInformacion);
+		textInformacion.setColumns(10);
 		
-		JButton btnIzquierda = new JButton("<");
-		panelZurdo.add(btnIzquierda);
 		
-		JPanel panelDiestro = new JPanel();
-		contentPane.add(panelDiestro, BorderLayout.EAST);
-		
-		JButton btnDerecha = new JButton(">");
-		panelDiestro.add(btnDerecha);
-	}
-	public void mostrarFotoDelEmpleado(Empleado e) {
+		//
+		informacionSobreGetxoBank = "GetxoBank \n "
+				+ "Nuestra empresa es capaz de almacenar datos sobre usuarios bancarios , nuestros propios empleados y las cuentas de cada usuario. ";
+		textInformacion.setText(informacionSobreGetxoBank);
 		
 	}
-
+	
 }

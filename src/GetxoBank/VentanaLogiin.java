@@ -102,20 +102,27 @@ public class VentanaLogiin extends JFrame {
 		btnAcceder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//PRIMERO COMPROBAR QUE LOS DATOS SON CORRECTOS
-				if (!comprobarDatos() ) {
-					
+				dni = textDni.getText();
+				contraseña = textContraseña.getText();
+				
+				if ( contraseña == "a") {
+					System.out.println("CORRECTO");
 				}else {
-					comprobarSiEstaEnElHashMap();
-					comprobarSiLaContraseñaEstaBien();
-					
-					
-					
-					
-					
-					
-					
-					
+					System.out.println("FRACASO");
 				}
+				
+						
+					
+					
+				
+					
+					
+					
+					
+					
+					
+					
+				
 			}
 		});
 		btnRegistrarse.addActionListener(new ActionListener() {
