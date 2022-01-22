@@ -106,7 +106,7 @@ public class VentanaRegistro extends JFrame {
 		panelCentral.add(textNombre);
 		textNombre.setColumns(10);
 		
-		JLabel lblDni = new JLabel("Dni");
+		JLabel lblDni = new JLabel("DNI");
 		panelCentral.add(lblDni);
 		
 		textDni = new JTextField();

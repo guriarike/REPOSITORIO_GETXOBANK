@@ -1,6 +1,6 @@
 package GetxoBank;
 
 public enum Provincia {
-	GIPUZCUA,ARABA,BIZKAIA;
+	GIPUZKOA,ARABA,BIZKAIA;
 
 }

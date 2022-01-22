@@ -25,7 +25,7 @@ public class BD {
 			Statement statement = con.createStatement();
 			String sent = "CREATE TABLE IF NOT EXISTS cuenta (nombre varchar(30), nCuenta INTEGER(10) PRIMARY KEY,saldo Decimal(7,2) tipo varchar(100));";
 			statement.executeUpdate( sent );
-			sent = "CREATE TABLE IF NOT EXISTS usuario (nom varchar(20), dni char(9) PRIMARY KEY, pin INTEGER(4), saldoTotal INTEGER, fchaNcto DATE , provincia varchar(15), nCuenta INTEGER(10) FOREIGN KEY REFERENCES CUENTA(nCuenta));";
+			sent = "CREATE TABLE IF NOT EXISTS usuario (nom varchar(20), dni char(9) PRIMARY KEY, pin INTEGER(4), saldoTotal INTEGER, fchaNcto DATE , provincia varchar(15));";
 			statement.executeUpdate( sent );
 			
 			return true;
@@ -107,7 +107,7 @@ public class BD {
 	public static boolean insertarUsuario(Usuario u) {
 		try (Statement st = con.createStatement()){
 			ArrayList<Cuenta> nuevaCuenta = new ArrayList<>();
-			String sent = "insert into usuario values ('" + u.getNombre() + "','" + u.getDni() + "','" + u.getPin() + "'," + u.getSaldoTotal() + ",'" + u.getFecha_nac() + "','" + u.getProvincia() + "'," + nuevaCuenta + ");";
+			String sent = "insert into usuario values ('" + u.getNombre() + "','" + u.getDni() + "','" + u.getPin() + "'," + u.getSaldoTotal() + ",'" + u.getFecha_nac() + "','" + u.getProvincia() + "');";
 			logger.log( Level.INFO, "Statement: " + sent );
 			int insertados = st.executeUpdate( sent );
 			if (insertados!=1) return false;
@@ -160,7 +160,7 @@ public class BD {
 			String sent = "update cuenta set saldo = " + saldoNuevo1 + " where nombre = '" + cPaga.getNombre() + "';";
 			String sent2 = "update cuenta set saldo = " + saldoNuevo2 + " where nombre = '" + cCobra.getNombre() + "';";
 		} catch (Exception e) {
-			// TODO: handle exception
+			logger.log( Level.SEVERE, "Excepción", e );
 		}
 	}
 	
