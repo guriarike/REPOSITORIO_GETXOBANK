@@ -53,13 +53,14 @@ public class VentanaGetxoBank extends JFrame {
 		lblGetxoBank = new JLabel("");
 		lblGetxoBank.setSize(200,200);
 		lblGetxoBank.setIcon(getxobank);
+		lblGetxoBank.setBounds(200,200,600,600);
 		
-		contentPane.add(lblGetxoBank, BorderLayout.NORTH);
+		contentPane.add(lblGetxoBank);
 		
 		lblLogo = new JLabel("");
 		lblLogo.setIcon(logo);
-		lblLogo.setBounds(250,250,250,250);
-		contentPane.add(lblLogo, BorderLayout.CENTER);
+		lblLogo.setBounds(200,200,800,600);
+		contentPane.add(lblLogo);
 		
 		panelSur = new JPanel();
 		contentPane.add(panelSur, BorderLayout.SOUTH);

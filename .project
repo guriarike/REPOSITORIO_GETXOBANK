@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src/GetxoBank/guria.jpg</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Pictures/Saved%20Pictures/guria.jpg</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

@@ -11,6 +11,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
+
+
 public class BD {
 	private static Connection con;
 	private static Logger logger = Logger.getLogger( "BaseDatos" );
@@ -162,6 +164,82 @@ public class BD {
 		} catch (Exception e) {
 			logger.log( Level.SEVERE, "Excepción", e );
 		}
+	}
+	public static void rellenarBD() {
+		try {
+			Statement st = con.createStatement();
+			//st.executeUpdate(sent);
+			ArrayList<String> posiblesNombres = new ArrayList<>();
+			posiblesNombres.add("MARTA");
+			posiblesNombres.add("IÑIGO");
+			posiblesNombres.add("UNAI");
+			posiblesNombres.add("PAULA");
+			posiblesNombres.add("ANDER");
+			posiblesNombres.add("MAIDER");
+			posiblesNombres.add("JUNE");
+			posiblesNombres.add("LANDER");
+			posiblesNombres.add("PEIO");
+			posiblesNombres.add("DAVID");
+			posiblesNombres.add("IZARO");
+			posiblesNombres.add("ITSASO");
+			posiblesNombres.add("CARMEN");
+			posiblesNombres.add("ALBA");
+			posiblesNombres.add("IBON");
+			posiblesNombres.add("IBAI");
+			posiblesNombres.add("HAIZEA");
+			posiblesNombres.add("MIKEL");
+			posiblesNombres.add("MIRIAN");
+			posiblesNombres.add("PATXI");
+			posiblesNombres.add("NORA");
+			posiblesNombres.add("JON");
+			posiblesNombres.add("MARIA");
+			
+			
+			
+			ArrayList<String> posiblesApellidos = new ArrayList<>();
+			posiblesApellidos.add("GUTIERREZ");
+			posiblesApellidos.add("VAZQUEZ");
+			posiblesApellidos.add("BEASCOECHEA");
+			posiblesApellidos.add("MARTINEZ");
+			posiblesApellidos.add("RIKE");
+			posiblesApellidos.add("CALVO");
+			posiblesApellidos.add("GELADO");
+			posiblesApellidos.add("JIMENEZ");
+			posiblesApellidos.add("ITURRIOTZ");
+			posiblesApellidos.add("LANDALUCE");
+			posiblesApellidos.add("ALMEIDA");
+			posiblesApellidos.add("GOIRIGOLZARRI");
+			posiblesApellidos.add("BIDEGORRI");
+			posiblesApellidos.add("PANERA");
+			posiblesApellidos.add("GOMEZ");
+			posiblesApellidos.add("CABO");
+			posiblesApellidos.add("REMENTERIA");
+			posiblesApellidos.add("CARRANZA");
+			posiblesApellidos.add("SANZ");
+			
+			
+			
+			
+			
+			String nombreRandom = "";
+			String fechaNacimientoRandom = "";
+			String provinciaRandom = "BIZKAIA";
+			String pinRandom = "aaaa";
+			
+			
+			
+			String sent = "INSERT INTO USUARIO VALUES ('')";
+			
+			
+		
+			st.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+		
 	}
 	
 	
