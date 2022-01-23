@@ -65,7 +65,6 @@ public class VentanaLogiin extends JFrame {
 		
 		JButton btnAcceder = new JButton("ACCEDER");
 		btnAcceder.setForeground(Color.BLACK);
-		btnAcceder.setBackground(Color.WHITE);
 		
 		panelSur.add(btnAcceder);
 		
@@ -143,7 +142,7 @@ public class VentanaLogiin extends JFrame {
 	}
 	public void volver() {
 		ventanaActual.dispose();
-		JFrame ventana = new VentanaGetxoBank();
+		JFrame ventana = new VentanaInicio();
 		ventana.setVisible(true);
 		
 	}

@@ -10,13 +10,14 @@ public class VentanaGestion extends JFrame {
 	private static JFrame ventanaActual;
 	private static JFrame ventanaAnterior;
 	private static Usuario usuarioActual;
+	private static Cuenta cuentaActual;
 	private JPanel contentPane;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					VentanaGestion frame = new VentanaGestion(usuarioActual, ventanaAnterior);
+					VentanaGestion frame = new VentanaGestion(cuentaActual, usuarioActual);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -25,10 +26,10 @@ public class VentanaGestion extends JFrame {
 		});
 	}
 
-	public VentanaGestion(Usuario us, JFrame va) {
-		ventanaAnterior = va;
+	public VentanaGestion(Cuenta c, Usuario us) {
 		ventanaActual = this;
 		usuarioActual = us;
+		cuentaActual = c;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -54,9 +55,9 @@ public class VentanaGestion extends JFrame {
 
 		JLabel lblNewLabel = new JLabel("\u00DAltimas operaciones:");
 		panelIzq.add(lblNewLabel);
-		JList comboUltimasOperaciones = new JList();
-		comboUltimasOperaciones.setToolTipText("");
-		panelIzq.add(comboUltimasOperaciones);
+		JList listaUltimasOperaciones = new JList();
+		listaUltimasOperaciones.setToolTipText("");
+		panelIzq.add(listaUltimasOperaciones);
 
 		JPanel panelDer = new JPanel();
 		panelCentral.add(panelDer);
@@ -81,25 +82,40 @@ public class VentanaGestion extends JFrame {
 
 		JButton btnIngresarDinero = new JButton("INGRESAR DINERO");
 		panelDer.add(btnIngresarDinero);
+		btnIngresarDinero.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ventanaActual.dispose();
+				VentanaCajero vc = new VentanaCajero(cuentaActual, usuarioActual);
+				vc.setVisible(true);
+			}
+		});
 
 		JButton btnSacarDinero = new JButton("SACAR DINERO");
 		panelDer.add(btnSacarDinero);
+		btnSacarDinero.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ventanaActual.dispose();
+				VentanaCajero vc = new VentanaCajero(cuentaActual, usuarioActual);
+				vc.setVisible(true);
+				
+			}
+		});
 
 		JButton btnCambiarPin = new JButton("CAMBIAR PIN");
 		panelDer.add(btnCambiarPin);
 
 		JButton btnVolver = new JButton("VOLVER");
-		btnVolver.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
 		contentPane.add(btnVolver, BorderLayout.SOUTH);
 
 		btnVolver.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-// TODO Auto-generated method stub
+				// TODO Auto-generated method stub
 				ventanaActual.dispose();
 				VentanaLogiin ventanaLogin = new VentanaLogiin();
 				ventanaLogin.setVisible(true);

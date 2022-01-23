@@ -27,6 +27,15 @@ public class Usuario {
 		this.provincia = p;
 		this.cuentasUsuario = cuentasU;
 	}
+	
+	public Usuario(String nombre, String dni, String pin, double saldoTotal, Provincia provincia) {
+		super();
+		this.nombre = nombre;
+		this.dni = dni;
+		this.pin = pin;
+		this.saldoTotal = saldoTotal;
+		this.provincia = provincia;
+	}
 
 
 

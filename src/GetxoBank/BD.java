@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,6 +19,8 @@ import java.util.logging.Logger;
 public class BD {
 	private static Connection con;
 	private static Logger logger = Logger.getLogger( "BaseDatos" );
+	private static Random random;
+	protected static ArrayList<Usuario> us;
 	
 	public static boolean initBD(String nombreBD){
 		
@@ -29,6 +34,7 @@ public class BD {
 			statement.executeUpdate( sent );
 			sent = "CREATE TABLE IF NOT EXISTS usuario (nom varchar(20), dni char(9) PRIMARY KEY, pin INTEGER(4), saldoTotal INTEGER, fchaNcto DATE , provincia varchar(15));";
 			statement.executeUpdate( sent );
+			rellenarBD();
 			
 			return true;
 			
@@ -126,8 +132,6 @@ public class BD {
 		
 	}
 	
-	
-	
 	public static boolean insertarNuevaCuenta(Cuenta c, Usuario u) {
 		try (Statement st = con.createStatement()) {
 			ArrayList<Usuario> usuarios = getUsuarios();
@@ -159,12 +163,31 @@ public class BD {
 		try (Statement st = con.createStatement()){
 			double saldoNuevo1 = cPaga.getSaldo() - dinero;
 			double saldoNuevo2 = cCobra.getSaldo() + dinero;
-			String sent = "update cuenta set saldo = " + saldoNuevo1 + " where nombre = '" + cPaga.getNombre() + "';";
-			String sent2 = "update cuenta set saldo = " + saldoNuevo2 + " where nombre = '" + cCobra.getNombre() + "';";
+			String sent = "update cuenta set saldo = " + saldoNuevo1 + " where nombre = '" + cPaga.getNombre() + "' and nCuenta = " + cPaga.getNumeroTarjeta() + ";";
+			String sent2 = "update cuenta set saldo = " + saldoNuevo2 + " where nombre = '" + cCobra.getNombre() + "' and nCuenta = " + cCobra.getNumeroTarjeta() + ";";
 		} catch (Exception e) {
 			logger.log( Level.SEVERE, "Excepción", e );
 		}
 	}
+	
+	public static void ingresarDinero(Cuenta c, double dinero) {
+		try (Statement st = con.createStatement()){
+			double saldoNuevo = c.getSaldo() + dinero;
+			String sent = "update cuenta set saldo = " + saldoNuevo + " where nombre = '" + c.getNombre() + "' and nCuenta = " + c.getNumeroTarjeta() + ";";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void sacarDinero(Cuenta c, double dinero) {
+		try (Statement st = con.createStatement()){
+			double saldoNuevo = c.getSaldo() - dinero;
+			String sent = "update cuenta set saldo = " + saldoNuevo + " where nombre = '" + c.getNombre() + "' and nCuenta = " + c.getNumeroTarjeta() + ";";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void rellenarBD() {
 		try {
 			Statement st = con.createStatement();
@@ -194,52 +217,54 @@ public class BD {
 			posiblesNombres.add("JON");
 			posiblesNombres.add("MARIA");
 			
+			List<String> posiblesLetras = new ArrayList<String>();
+			
+			posiblesLetras.add("Q");
+			posiblesLetras.add("W");
+			posiblesLetras.add("E");
+			posiblesLetras.add("R");
+			posiblesLetras.add("T");
+			posiblesLetras.add("Y");
+			posiblesLetras.add("U");
+			posiblesLetras.add("I");
+			posiblesLetras.add("O");
+			posiblesLetras.add("P");
+			posiblesLetras.add("L");
+			posiblesLetras.add("K");
+			posiblesLetras.add("J");
+			posiblesLetras.add("H");
+			posiblesLetras.add("G");
+			posiblesLetras.add("F");
+			posiblesLetras.add("D");
+			posiblesLetras.add("S");
+			posiblesLetras.add("A");
+			posiblesLetras.add("Z");
+			posiblesLetras.add("X");
+			posiblesLetras.add("C");
+			posiblesLetras.add("V");
+			posiblesLetras.add("B");
+			posiblesLetras.add("N");
+			posiblesLetras.add("M");
 			
 			
-			ArrayList<String> posiblesApellidos = new ArrayList<>();
-			posiblesApellidos.add("GUTIERREZ");
-			posiblesApellidos.add("VAZQUEZ");
-			posiblesApellidos.add("BEASCOECHEA");
-			posiblesApellidos.add("MARTINEZ");
-			posiblesApellidos.add("RIKE");
-			posiblesApellidos.add("CALVO");
-			posiblesApellidos.add("GELADO");
-			posiblesApellidos.add("JIMENEZ");
-			posiblesApellidos.add("ITURRIOTZ");
-			posiblesApellidos.add("LANDALUCE");
-			posiblesApellidos.add("ALMEIDA");
-			posiblesApellidos.add("GOIRIGOLZARRI");
-			posiblesApellidos.add("BIDEGORRI");
-			posiblesApellidos.add("PANERA");
-			posiblesApellidos.add("GOMEZ");
-			posiblesApellidos.add("CABO");
-			posiblesApellidos.add("REMENTERIA");
-			posiblesApellidos.add("CARRANZA");
-			posiblesApellidos.add("SANZ");
-			
-			
-			
-			
-			
-			String nombreRandom = "";
-			String fechaNacimientoRandom = "";
-			String provinciaRandom = "BIZKAIA";
-			String pinRandom = "aaaa";
-			
-			
-			
-			String sent = "INSERT INTO USUARIO VALUES ('')";
-			
-			
-		
+			for (int i = 10000000; i < 10000200; i++) {
+				String nombre = posiblesNombres.get(random.nextInt(posiblesNombres.size()));
+				String dni = i + posiblesLetras.get(random.nextInt(posiblesLetras.size()));
+				String pin = String.valueOf(random.nextInt(200) + 1000);
+				Double saldo = 0.0;
+				
+				int p = new Random().nextInt(Provincia.values().length);
+				Provincia pr = Provincia.values()[p];
+				
+				String sent = "INSERT INTO USUARIO(nombre, dni, pin, saldo, provincia) VALUES ('" + nombre.toUpperCase() + "', '" + dni + "', '" + pin + "', " + saldo + ", '" + p + ");";
+				st.execute(sent);
+				us.add(new Usuario(nombre, dni, pin, saldo, pr));
+			}
 			st.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-
-		
-		
+		}	
 	}
 	
 	
