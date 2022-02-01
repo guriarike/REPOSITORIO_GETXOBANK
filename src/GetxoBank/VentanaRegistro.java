@@ -60,15 +60,7 @@ public class VentanaRegistro extends JFrame {
 	 * Create the frame.
 	 */
 	public VentanaRegistro() {
-		/**
-		textApellidos.setText("");;
-		textContraseña.setText("");
-		textDni.setText("");;
-		textEmail.setText("");;
-		textNombre.setText("");;
-		textTelefono.setText("");
-		**/
-		
+			
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -81,11 +73,9 @@ public class VentanaRegistro extends JFrame {
 		contentPane.add(panelSur, BorderLayout.SOUTH);
 		
 		JButton btnVolver = new JButton("VOLVER");
-	
 		panelSur.add(btnVolver);
 		
 		JButton btnFinalizar = new JButton("FINALIZAR");
-	
 		panelSur.add(btnFinalizar);
 		
 		JPanel panelCentral = new JPanel();
@@ -137,14 +127,8 @@ public class VentanaRegistro extends JFrame {
 		JLabel lblAñoNacimiento = new JLabel("A\u00D1O DE  NACIMIENTO");
 		panelCentral.add(lblAñoNacimiento);
 		
-		
-	
-		
-		
-		
 		JComboBox comboAño = new JComboBox<Integer>();
 		llenarComboFechas(comboAño);
-		
 		
 		panelCentral.add(comboAño);
 		
@@ -168,23 +152,13 @@ public class VentanaRegistro extends JFrame {
 			e1.printStackTrace();
 		}
 		saldoUsuario=0;
-		
-		 
-		 
-		 
-		 
-		 
-		 
-		 
 		 
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ventanaActual.dispose();
 				
 				VentanaLogiin ventana = new VentanaLogiin();
-				ventana.setVisible(true);
-				
-				
+				ventana.setVisible(true);				
 			}
 		});
 		btnFinalizar.addActionListener(new ActionListener() {
@@ -192,30 +166,7 @@ public class VentanaRegistro extends JFrame {
 				crearUsuario();
 			}
 		});
-		
-		
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
+
 		 
 	}
 	//METODOS
@@ -243,15 +194,13 @@ public class VentanaRegistro extends JFrame {
 		boolean correctoTelefono = Pattern.matches(erTelefono, datoRecibido);
 		return correctoTelefono;
 	}
-	public Usuario crearUsuario() {
+	public void crearUsuario() {
 		/**public Usuario(String nom, String dni, String pin, int saldoTotal, Date fchaNcto , Provincia p, ArrayList<Cuenta> cuentasU)
 		**/
 		
-		
 		Usuario u = new Usuario(nombre, dni, contraseña, saldoUsuario, fechaNacimiento,  p, cuentasUsuario);
-		guardarUsuarioEnElHashMapDeLaVentanaLogin();
+		guardarUsuarioEnElHashMapDeLaVentanaLogin(u);
 		System.out.println(u);
-		return u;
 		//Usuario u = new Usuario();
 		
 		//Usuario  nuevoUsuario= new Usuario (textEmail.getText(), textNombre.getText(), textApellidos.getText(), textDni.getText(), comboAño.getSelectedItem(), comboProvincia.getSelectedItem(), 0, 0, 0);
@@ -269,8 +218,8 @@ public class VentanaRegistro extends JFrame {
 		}
 		
 	}
-	public void guardarUsuarioEnElHashMapDeLaVentanaLogin() {
-		
+	public static void guardarUsuarioEnElHashMapDeLaVentanaLogin(Usuario u) {
+		BD.insertarUsuario(u);
 		
 	}
 	
