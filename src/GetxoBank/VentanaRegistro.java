@@ -79,7 +79,7 @@ public class VentanaRegistro extends JFrame {
 		contentPane.add(panelCentral, BorderLayout.CENTER);
 		panelCentral.setLayout(new GridLayout(7, 2, 0, 0));
 		
-		JLabel lblNombre = new JLabel(" NOMBRE");
+		JLabel lblNombre = new JLabel("NOMBRE");
 		panelCentral.add(lblNombre);
 		
 		textNombre = new JTextField();
@@ -121,6 +121,7 @@ public class VentanaRegistro extends JFrame {
 		dni= textDni.getText();
 		contraseña = textContraseña.getText();			
 		año = (Integer) comboAño.getSelectedItem();
+		p = (Provincia) comboProvincia.getSelectedItem();
 		 
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -154,8 +155,6 @@ public class VentanaRegistro extends JFrame {
 		return correctoNombre;
 	}
 	public void crearUsuario() {
-		/**public Usuario(String nom, String dni, String pin, int saldoTotal, int añoNcto , Provincia p, ArrayList<Cuenta> cuentasU)
-		**/
 		Usuario u = new Usuario(nombre, dni, contraseña, 0.0, año,  p, new ArrayList<Cuenta>());
 		guardarUsuarioEnElHashMapDeLaVentanaLogin(u);
 		System.out.println(u);

@@ -30,11 +30,10 @@ public class BD {
 			con = DriverManager.getConnection("jdbc:sqlite:" + nombreBD );
 			
 			Statement statement = con.createStatement();
-			String sent = "CREATE TABLE IF NOT EXISTS cuenta (nombre varchar(30), nCuenta INTEGER(10) PRIMARY KEY,saldo Decimal(7,2) tipo varchar(100));";
+			String sent = "CREATE TABLE IF NOT EXISTS CUENTA (dni varchar(9), nCuenta INTEGER(10) PRIMARY KEY,saldo FLOAT, tipo varchar(100));";
 			statement.executeUpdate( sent );
-			sent = "CREATE TABLE IF NOT EXISTS usuario (nom varchar(20), dni char(9) PRIMARY KEY, pin INTEGER(4), saldoTotal INTEGER, añoNac INTEGER(4) , provincia varchar(15));";
-			statement.executeUpdate( sent );
-			rellenarBD();
+			String sent1 = "CREATE TABLE IF NOT EXISTS USUARIO (nom varchar(20), dni varchar(9) PRIMARY KEY, pin INTEGER(4), saldoTotal INTEGER, añoNac INTEGER(4) , provincia varchar(15));";
+			statement.executeUpdate( sent1 );
 			
 			return true;
 			
@@ -60,14 +59,15 @@ public class BD {
 			System.out.println( sent );
 			ResultSet rs = statement.executeQuery( sent );
 			while( rs.next() ) { // Leer el resultset
-				String nombre = rs.getString("nombre");
+				String nombre = rs.getString("nom");
 				String dni = rs.getString("dni");
 				String pin = rs.getString("pin");
 				int saldoTotal = rs.getInt("saldoTotal");
 				int añoNac = rs.getInt("añoNac");
 				String p = rs.getString("provincia");
-				ArrayList<Cuenta> aCuentas = getCuentasDeUnUsuario(nombre);
+				ArrayList<Cuenta> aCuentas = getCuentasDeUnUsuario(dni);
 				
+				System.out.println(p);
 				usuarios.add( new Usuario ( nombre, dni, pin, saldoTotal, añoNac , Provincia.valueOf(p), aCuentas ) );
 				}
 			
@@ -81,15 +81,15 @@ public class BD {
 	public static ArrayList<Cuenta> getCuentas() {
 		try (Statement statement = con.createStatement()) {
 			ArrayList<Cuenta> cuentas = new ArrayList<>();
-			String sent = "select * from cuentas;";
+			String sent = "select * from CUENTA;";
 			logger.log( Level.INFO, "Statement: " + sent );
 			ResultSet rs = statement.executeQuery( sent );
 			while(rs.next()) {
-				String nombre = rs.getString("nombre");
+				String dni = rs.getString("dni");
 				int nTarjeta = rs.getInt("nCuenta");
 				double saldo = rs.getDouble("saldo");
 				String tipo = rs.getString("tipo");
-				cuentas.add(new Cuenta(nombre, nTarjeta, saldo, TipoCuenta.valueOf(tipo)));
+				cuentas.add(new Cuenta(dni, nTarjeta, saldo, TipoCuenta.valueOf(tipo)));
 			}
 			statement.close();
 			return cuentas;
@@ -100,11 +100,11 @@ public class BD {
 		
 	}
 	
-	public static ArrayList<Cuenta>getCuentasDeUnUsuario(String nombre) {
+	public static ArrayList<Cuenta>getCuentasDeUnUsuario(String dni) {
 		ArrayList<Cuenta> cuentas = getCuentas();
 		ArrayList<Cuenta> cuentasUsuario = new ArrayList<Cuenta>();
 		for (Cuenta cuenta : cuentas) {
-			if(cuenta.getNombre() == nombre) {
+			if(cuenta.getDni() == dni) {
 				cuentasUsuario.add(cuenta);
 			}
 		}
@@ -114,8 +114,7 @@ public class BD {
 	
 	public static boolean insertarUsuario(Usuario u) {
 		try (Statement st = con.createStatement()){
-			ArrayList<Cuenta> nuevaCuenta = new ArrayList<>();
-			String sent = "insert into usuario values ('" + u.getNombre() + "','" + u.getDni() + "','" + u.getPin() + "'," + u.getSaldoTotal() + ",'" + u.getAño_nac() + "','" + u.getProvincia() + "');";
+			String sent = "insert into USUARIO values ('" + u.getNombre() + "','" + u.getDni() + "','" + u.getPin() + "'," + u.getSaldoTotal() + ",'" + u.getAño_nac() + "','" + u.getProvincia() + "');";
 			logger.log( Level.INFO, "Statement: " + sent );
 			int insertados = st.executeUpdate( sent );
 			if (insertados!=1) return false;
@@ -138,8 +137,8 @@ public class BD {
 			if(!usuarios.contains(u)) {
 				insertarUsuario(u);
 			}
-			if(c.getNombre() != u.getNombre()) return false;
-			String sent = "insert into Cuenta values('" + c.getNombre() + "', " + c.getNumeroTarjeta() + ", " + c.getSaldo() + ", '"+ c.getTipo()+ "');";
+			if(c.getDni() != u.getDni()) return false;
+			String sent = "insert into CUENTA values('" + c.getDni() + "', " + c.getNumeroTarjeta() + ", " + c.getSaldo() + ", '"+ c.getTipo()+ "');";
 			int val = st.executeUpdate(sent);
 			logger.log(Level.INFO, val + "cuenta añadida");
 			st.close();
@@ -163,8 +162,8 @@ public class BD {
 		try (Statement st = con.createStatement()){
 			double saldoNuevo1 = cPaga.getSaldo() - dinero;
 			double saldoNuevo2 = cCobra.getSaldo() + dinero;
-			String sent = "update cuenta set saldo = " + saldoNuevo1 + " where nombre = '" + cPaga.getNombre() + "' and nCuenta = " + cPaga.getNumeroTarjeta() + ";";
-			String sent2 = "update cuenta set saldo = " + saldoNuevo2 + " where nombre = '" + cCobra.getNombre() + "' and nCuenta = " + cCobra.getNumeroTarjeta() + ";";
+			String sent = "update cuenta set saldo = " + saldoNuevo1 + " where dni = '" + cPaga.getDni() + "' and nCuenta = " + cPaga.getNumeroTarjeta() + ";";
+			String sent2 = "update cuenta set saldo = " + saldoNuevo2 + " where dni = '" + cCobra.getDni() + "' and nCuenta = " + cCobra.getNumeroTarjeta() + ";";
 		} catch (Exception e) {
 			logger.log( Level.SEVERE, "Excepción", e );
 		}
@@ -173,7 +172,7 @@ public class BD {
 	public static void ingresarDinero(Cuenta c, double dinero) {
 		try (Statement st = con.createStatement()){
 			double saldoNuevo = c.getSaldo() + dinero;
-			String sent = "update cuenta set saldo = " + saldoNuevo + " where nombre = '" + c.getNombre() + "' and nCuenta = " + c.getNumeroTarjeta() + ";";
+			String sent = "update cuenta set saldo = " + saldoNuevo + " where nombre = '" + c.getDni() + "' and nCuenta = " + c.getNumeroTarjeta() + ";";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -182,13 +181,14 @@ public class BD {
 	public static void sacarDinero(Cuenta c, double dinero) {
 		try (Statement st = con.createStatement()){
 			double saldoNuevo = c.getSaldo() - dinero;
-			String sent = "update cuenta set saldo = " + saldoNuevo + " where nombre = '" + c.getNombre() + "' and nCuenta = " + c.getNumeroTarjeta() + ";";
+			String sent = "update cuenta set saldo = " + saldoNuevo + " where nombre = '" + c.getDni() + "' and nCuenta = " + c.getNumeroTarjeta() + ";";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public static void rellenarBD() {
+		us = new ArrayList<>();
 		try (Statement st = con.createStatement();){
 			
 			//st.executeUpdate(sent);
@@ -265,7 +265,7 @@ public class BD {
 				int p = new Random().nextInt(Provincia.values().length);
 				Provincia pr = Provincia.values()[p];
 				
-				String sent = "INSERT INTO USUARIO(nom, dni, pin, saldoTotal, añoNac, provincia) VALUES ('" + nombre.toUpperCase() + "', '" + dni + "', '" + pin + "', " + saldo + ", '" + p + ");";
+				String sent = "INSERT INTO USUARIO(nom, dni, pin, saldoTotal, añoNac, provincia) VALUES ('" + nombre.toUpperCase() + "', '" + dni + "', '" + pin + "', " + saldo + ", " + año + ", '"+ pr + "');";
 				st.execute(sent);
 				us.add(new Usuario(nombre, dni, pin, saldo, año, pr));
 			}
@@ -274,6 +274,21 @@ public class BD {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
+	}
+	
+	public static void borrarBD() {
+		try(Statement st = con.createStatement()) {
+			String sent = "delete from USUARIO";
+			st.executeUpdate(sent);
+			sent = "delete from CUENTA";
+			st.executeUpdate(sent);
+		} catch (Exception e){
+			logger.log(Level.SEVERE, e.toString());
+		}
+	}
+	
+	public static boolean comprobarUsuarioExistente(String dni, String pin) {
+		return true;
 	}
 	
 	

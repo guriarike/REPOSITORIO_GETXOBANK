@@ -3,14 +3,14 @@ package GetxoBank;
 import javax.swing.JOptionPane;
 
 public class Cuenta {
-	private String nombre;
+	private String dni;
 	private int numeroTarjeta;
 	private double saldo;
 	private TipoCuenta tipo;
 	//TODO private Arraylist<Usuario> dueñoCuenta
-	public Cuenta(String nombre, int numeroTarjeta, double saldo, TipoCuenta tipo) {
+	public Cuenta(String dni, int numeroTarjeta, double saldo, TipoCuenta tipo) {
 		super();
-		this.nombre = nombre;
+		this.dni = dni;
 		this.numeroTarjeta = numeroTarjeta;
 		this.saldo = saldo;
 		this.tipo = tipo;
@@ -21,11 +21,11 @@ public class Cuenta {
 	}
 	
 	
-	public String getNombre() {
-		return nombre;
+	public String getDni() {
+		return dni;
 	}
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+	public void setDni(String dni) {
+		this.dni = dni;
 	}
 	public int getNumeroTarjeta() {
 		return numeroTarjeta;
@@ -48,7 +48,7 @@ public class Cuenta {
 	
 	@Override
 	public String toString() {
-		return "Cuenta [nombre=" + nombre + ", numeroTarjeta=" + numeroTarjeta + ", saldo=" + saldo + ", tipo=" + tipo
+		return "Cuenta [nombre=" + dni + ", numeroTarjeta=" + numeroTarjeta + ", saldo=" + saldo + ", tipo=" + tipo
 				+ "]";
 	}
 	//METODOS
