@@ -288,7 +288,15 @@ public class BD {
 	}
 	
 	public static boolean comprobarUsuarioExistente(String dni, String pin) {
-		return true;
+		us = getUsuarios();
+		for (Usuario usuario : us) {
+			if(usuario.getDni().equals(dni)) {
+				if(usuario.getPin().equals(pin)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	

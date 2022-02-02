@@ -37,7 +37,10 @@ public class Usuario {
 		this.provincia = provincia;
 	}
 
-
+	public Usuario(String dni) {
+		super();
+		this.dni = dni;
+	}
 
 	public String getNombre() {
 		return nombre;

@@ -102,12 +102,14 @@ public class VentanaLogiin extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				//PRIMERO COMPROBAR QUE LOS DATOS SON CORRECTOS
 				dni = textDni.getText();
-				contraseña = textContraseña.getText();
-				
-				if ( contraseña == "a") {
-					System.out.println("CORRECTO");
+				contraseña = (String) textContraseña.getText();
+				boolean correcto = BD.comprobarUsuarioExistente(dni, contraseña);
+				if(correcto) {
+					ventanaActual.dispose();
+					JFrame ventanaHome = new VentanaHome(new Cuenta(), new Usuario(dni));
+					ventanaHome.setVisible(true);
 				}else {
-					System.out.println("FRACASO");
+					System.out.println("DNI O PIN INCORRECTO");
 				}
 				
 						
