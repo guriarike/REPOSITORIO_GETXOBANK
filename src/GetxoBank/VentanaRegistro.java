@@ -8,6 +8,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
 import javax.swing.JButton;
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -27,16 +28,12 @@ public class VentanaRegistro extends JFrame {
 	private JComboBox comboProvincia;
 	private static JComboBox<Integer> comboAño;
 	private JPanel contentPane;
-	private JTextField textEmail;
 	private JTextField textNombre;
-	private JTextField textApellidos;
-	private JTextField textTelefono;
 	private JTextField textContraseña;
 	private JTextField textDni;
-	private int numeroDeCuentas,saldoUsuario,telefono;
 	private Provincia p;
 	private String nombre,dni,contraseña;
-	private Date fechaNacimiento;
+	private int año;
 	private JFrame ventanaActual;
 	private ArrayList<Cuenta> cuentasUsuario;
 
@@ -80,14 +77,7 @@ public class VentanaRegistro extends JFrame {
 		
 		JPanel panelCentral = new JPanel();
 		contentPane.add(panelCentral, BorderLayout.CENTER);
-		panelCentral.setLayout(new GridLayout(10, 2, 0, 0));
-		
-		JLabel lblEmail = new JLabel(" E-MAIL");
-		panelCentral.add(lblEmail);
-		
-		textEmail = new JTextField();
-		panelCentral.add(textEmail);
-		textEmail.setColumns(10);
+		panelCentral.setLayout(new GridLayout(7, 2, 0, 0));
 		
 		JLabel lblNombre = new JLabel(" NOMBRE");
 		panelCentral.add(lblNombre);
@@ -102,20 +92,7 @@ public class VentanaRegistro extends JFrame {
 		textDni = new JTextField();
 		panelCentral.add(textDni);
 		textDni.setColumns(10);
-		
-		JLabel lblApellidos = new JLabel("APELLIDOS");
-		panelCentral.add(lblApellidos);
-		
-		textApellidos = new JTextField();
-		panelCentral.add(textApellidos);
-		textApellidos.setColumns(10);
-		
-		JLabel lblTelefono = new JLabel("TELEFONO MOVIL");
-		panelCentral.add(lblTelefono);
-		
-		textTelefono = new JTextField();
-		panelCentral.add(textTelefono);
-		textTelefono.setColumns(10);
+	
 		
 		JLabel lblContraseña = new JLabel("INTRODUZCA SU CONTRASE\u00D1A");
 		panelCentral.add(lblContraseña);
@@ -143,15 +120,7 @@ public class VentanaRegistro extends JFrame {
 		nombre = textNombre.getText();
 		dni= textDni.getText();
 		contraseña = textContraseña.getText();			
-		numeroDeCuentas= 0;
-		String date = comboAño.getSelectedItem().toString();
-		try {
-			fechaNacimiento = new SimpleDateFormat("yyyy").parse(date);
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		saldoUsuario=0;
+		año = (Integer) comboAño.getSelectedItem();
 		 
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -170,10 +139,6 @@ public class VentanaRegistro extends JFrame {
 		 
 	}
 	//METODOS
-	public void comprobarEmail() {
-		String datoRecibido = textEmail.getText();
-		
-	}
 	public  boolean comprobarDni() {
 		String datoRecibido = textDni.getText();
 		String erDni = "[0-9] {8}[A-Z] {1}";
@@ -188,22 +153,13 @@ public class VentanaRegistro extends JFrame {
 		boolean correctoNombre = Pattern.matches(erNombre, datoRecibido);
 		return correctoNombre;
 	}
-	public boolean comprobarTelelfono() {
-		String datoRecibido = textTelefono.getText();
-		String erTelefono = "[0-9] {9}";
-		boolean correctoTelefono = Pattern.matches(erTelefono, datoRecibido);
-		return correctoTelefono;
-	}
 	public void crearUsuario() {
-		/**public Usuario(String nom, String dni, String pin, int saldoTotal, Date fchaNcto , Provincia p, ArrayList<Cuenta> cuentasU)
+		/**public Usuario(String nom, String dni, String pin, int saldoTotal, int añoNcto , Provincia p, ArrayList<Cuenta> cuentasU)
 		**/
-		
-		Usuario u = new Usuario(nombre, dni, contraseña, saldoUsuario, fechaNacimiento,  p, cuentasUsuario);
+		Usuario u = new Usuario(nombre, dni, contraseña, 0.0, año,  p, new ArrayList<Cuenta>());
 		guardarUsuarioEnElHashMapDeLaVentanaLogin(u);
 		System.out.println(u);
 		//Usuario u = new Usuario();
-		
-		//Usuario  nuevoUsuario= new Usuario (textEmail.getText(), textNombre.getText(), textApellidos.getText(), textDni.getText(), comboAño.getSelectedItem(), comboProvincia.getSelectedItem(), 0, 0, 0);
 		
 	}
 	public void llenarComboFechas(JComboBox<Integer> combo) {

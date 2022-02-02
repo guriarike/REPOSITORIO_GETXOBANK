@@ -9,12 +9,12 @@ public class Usuario {
 	private String dni;
 	private String pin;
 	private double saldoTotal;
-	private Date fecha_nac;
+	private int año_nac;
 	private Provincia provincia;
 	private ArrayList<Cuenta> cuentasUsuario;
 
 
-	public Usuario(String nom, String dni, String pin, double saldoTotal, Date fchaNcto , Provincia p, ArrayList<Cuenta> cuentasU) {
+	public Usuario(String nom, String dni, String pin, double saldoTotal, int añoNcto , Provincia p, ArrayList<Cuenta> cuentasU) {
 		// TODO Auto-generated constructor stub
 		this.nombre = nom;
 		this.dni = dni;
@@ -22,18 +22,18 @@ public class Usuario {
 		for (Cuenta cuenta : cuentasU) {
 			this.saldoTotal += cuenta.getSaldo();
 		}
-		
-		this.fecha_nac = fchaNcto;
+		this.año_nac = añoNcto;
 		this.provincia = p;
 		this.cuentasUsuario = cuentasU;
 	}
 	
-	public Usuario(String nombre, String dni, String pin, double saldoTotal, Provincia provincia) {
+	public Usuario(String nombre, String dni, String pin, double saldoTotal,int añoNac, Provincia provincia) {
 		super();
 		this.nombre = nombre;
 		this.dni = dni;
 		this.pin = pin;
 		this.saldoTotal = saldoTotal;
+		this.año_nac = añoNac;
 		this.provincia = provincia;
 	}
 
@@ -79,13 +79,13 @@ public class Usuario {
 	}
 
 
-	public Date getFecha_nac() {
-		return fecha_nac;
+	public int getAño_nac() {
+		return año_nac;
 	}
 
 
-	public void setFecha_nac(Date fecha_nac) {
-		this.fecha_nac = fecha_nac;
+	public void setAño_nac(int año_nac) {
+		this.año_nac = año_nac;
 	}
 
 
@@ -113,7 +113,7 @@ public class Usuario {
 	@Override
 	public String toString() {
 		return "Usuario [nombre=" + nombre + ", dni=" + dni + ", ContraseñaUsuario=" + pin
-				+ ", saldoTotal=" + saldoTotal + ", fecha_nac=" + fecha_nac + ", provincia=" + provincia
+				+ ", saldoTotal=" + saldoTotal + ", fecha_nac=" + año_nac + ", provincia=" + provincia
 				+ ", cuentasUsuario=" + cuentasUsuario + "]";
 	}
 

@@ -15,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.Rectangle;
 import java.awt.Font;
 import javax.swing.SwingConstants;
@@ -30,10 +31,6 @@ public class VentanaCajero extends JFrame {
 	private JTextField txtCantidad;
 	private ImageIcon getxobank;
 
-
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -57,16 +54,15 @@ public class VentanaCajero extends JFrame {
 		cuentaActual = c;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1000, 600);
+		setBounds(100, 100, 1352, 762);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
 		
 		getxobank = new ImageIcon(VentanaCajero.class.getResource("logo_small.png"));
+		contentPane.setLayout(new GridLayout(4, 1, 0, 0));
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(5, 5, 976, 276);
 		contentPane.add(panel);
 		panel.setLayout(new BorderLayout(0, 0));
 		
@@ -81,8 +77,11 @@ public class VentanaCajero extends JFrame {
 		panel.add(panel_1, BorderLayout.EAST);
 		panel_1.setLayout(new GridLayout(2, 2, 0, 0));
 		
+		JLabel lblNewLabel_1 = new JLabel("");
+		contentPane.add(lblNewLabel_1);
+		
 		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setBounds(236, 349, 539, 106);
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setIcon(getxobank);
 		contentPane.add(lblNewLabel);
 		
@@ -108,18 +107,35 @@ public class VentanaCajero extends JFrame {
 			}
 		});
 		
+		JPanel panel_2 = new JPanel();
+		contentPane.add(panel_2);
+		panel_2.setLayout(new GridLayout(0, 2, 0, 0));
+		
 		JButton btnVolver = new JButton("VOLVER");
-		btnVolver.setBounds(126, 502, 357, 51);
-		contentPane.add(btnVolver);
+		panel_2.add(btnVolver);
 		
 		JButton btnAceptar = new JButton("ACEPTAR");
-		btnAceptar.addActionListener(new ActionListener() {
+		panel_2.add(btnAceptar);
+		
+		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				BD.ingresarDinero(cuentaActual, Integer.valueOf(txtCantidad.getText()));
+				ventanaActual.dispose();
+				VentanaHome ventanaHome = new VentanaHome(cuentaActual, usuarioActual);
+				ventanaHome.setVisible(true);
 			}
 		});
-		btnAceptar.setBounds(515, 502, 357, 51);
-		contentPane.add(btnAceptar);
+		
+		btnAceptar.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				BD.ingresarDinero(c, Integer.valueOf(txtCantidad.getText()));
+				ventanaActual.dispose();
+				VentanaHome ventanaHome = new VentanaHome(cuentaActual, usuarioActual);
+				ventanaHome.setVisible(true);
+			}
+		});
 		
 		
 		JLabel tecla = new JLabel("");
@@ -141,20 +157,9 @@ public class VentanaCajero extends JFrame {
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 					BD.ingresarDinero(c, Integer.valueOf(txtCantidad.getText()));
+					System.out.println(c);
 				}
 				
-			}
-		});
-	
-
-		btnVolver.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				ventanaActual.dispose();
-				VentanaGestion ventanaGestion = new VentanaGestion(cuentaActual, usuarioActual);
-				ventanaGestion.setVisible(true);
-
 			}
 		});
 	}

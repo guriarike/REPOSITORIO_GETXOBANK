@@ -32,7 +32,7 @@ public class BD {
 			Statement statement = con.createStatement();
 			String sent = "CREATE TABLE IF NOT EXISTS cuenta (nombre varchar(30), nCuenta INTEGER(10) PRIMARY KEY,saldo Decimal(7,2) tipo varchar(100));";
 			statement.executeUpdate( sent );
-			sent = "CREATE TABLE IF NOT EXISTS usuario (nom varchar(20), dni char(9) PRIMARY KEY, pin INTEGER(4), saldoTotal INTEGER, fchaNcto DATE , provincia varchar(15));";
+			sent = "CREATE TABLE IF NOT EXISTS usuario (nom varchar(20), dni char(9) PRIMARY KEY, pin INTEGER(4), saldoTotal INTEGER, añoNac INTEGER(4) , provincia varchar(15));";
 			statement.executeUpdate( sent );
 			rellenarBD();
 			
@@ -64,11 +64,11 @@ public class BD {
 				String dni = rs.getString("dni");
 				String pin = rs.getString("pin");
 				int saldoTotal = rs.getInt("saldoTotal");
-				Date fchaNac = rs.getDate("fchaNcto");
+				int añoNac = rs.getInt("añoNac");
 				String p = rs.getString("provincia");
 				ArrayList<Cuenta> aCuentas = getCuentasDeUnUsuario(nombre);
 				
-				usuarios.add( new Usuario ( nombre, dni, pin, saldoTotal, fchaNac , Provincia.valueOf(p), aCuentas ) );
+				usuarios.add( new Usuario ( nombre, dni, pin, saldoTotal, añoNac , Provincia.valueOf(p), aCuentas ) );
 				}
 			
 			return usuarios;
@@ -115,7 +115,7 @@ public class BD {
 	public static boolean insertarUsuario(Usuario u) {
 		try (Statement st = con.createStatement()){
 			ArrayList<Cuenta> nuevaCuenta = new ArrayList<>();
-			String sent = "insert into usuario values ('" + u.getNombre() + "','" + u.getDni() + "','" + u.getPin() + "'," + u.getSaldoTotal() + ",'" + u.getFecha_nac() + "','" + u.getProvincia() + "');";
+			String sent = "insert into usuario values ('" + u.getNombre() + "','" + u.getDni() + "','" + u.getPin() + "'," + u.getSaldoTotal() + ",'" + u.getAño_nac() + "','" + u.getProvincia() + "');";
 			logger.log( Level.INFO, "Statement: " + sent );
 			int insertados = st.executeUpdate( sent );
 			if (insertados!=1) return false;
@@ -189,9 +189,10 @@ public class BD {
 	}
 	
 	public static void rellenarBD() {
-		try {
-			Statement st = con.createStatement();
+		try (Statement st = con.createStatement();){
+			
 			//st.executeUpdate(sent);
+			random = new Random();
 			ArrayList<String> posiblesNombres = new ArrayList<>();
 			posiblesNombres.add("MARTA");
 			posiblesNombres.add("IÑIGO");
@@ -246,19 +247,27 @@ public class BD {
 			posiblesLetras.add("N");
 			posiblesLetras.add("M");
 			
+			List<Integer> posiblesAños = new ArrayList<>();
+			
+			for (int i = 1922; i < 2023; i++) {
+				posiblesAños.add(i);
+				
+			}
+			
 			
 			for (int i = 10000000; i < 10000200; i++) {
 				String nombre = posiblesNombres.get(random.nextInt(posiblesNombres.size()));
 				String dni = i + posiblesLetras.get(random.nextInt(posiblesLetras.size()));
 				String pin = String.valueOf(random.nextInt(200) + 1000);
 				Double saldo = 0.0;
+				int año = posiblesAños.get(random.nextInt(posiblesAños.size()));
 				
 				int p = new Random().nextInt(Provincia.values().length);
 				Provincia pr = Provincia.values()[p];
 				
-				String sent = "INSERT INTO USUARIO(nombre, dni, pin, saldo, provincia) VALUES ('" + nombre.toUpperCase() + "', '" + dni + "', '" + pin + "', " + saldo + ", '" + p + ");";
+				String sent = "INSERT INTO USUARIO(nom, dni, pin, saldoTotal, añoNac, provincia) VALUES ('" + nombre.toUpperCase() + "', '" + dni + "', '" + pin + "', " + saldo + ", '" + p + ");";
 				st.execute(sent);
-				us.add(new Usuario(nombre, dni, pin, saldo, pr));
+				us.add(new Usuario(nombre, dni, pin, saldo, año, pr));
 			}
 			st.close();
 		} catch (SQLException e) {
