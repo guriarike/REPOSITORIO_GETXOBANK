@@ -253,10 +253,10 @@ public class BD {
 			}
 			
 			
-			for (int i = 10000000; i < 10000200; i++) {
+			for (int i = 10000000; i < 10000050; i++) {
 				String nombre = posiblesNombres.get(random.nextInt(posiblesNombres.size()));
 				String dni = i + posiblesLetras.get(random.nextInt(posiblesLetras.size()));
-				String pin = String.valueOf(random.nextInt(200) + 1000);
+				String pin = String.valueOf(random.nextInt(9999));
 				Double saldo = (double) random.nextInt(10000);
 				int año = posiblesAños.get(random.nextInt(posiblesAños.size()));
 				
@@ -308,6 +308,6 @@ public class BD {
 		}
 		return c;
 	}
-	}
+}
 	
 	
