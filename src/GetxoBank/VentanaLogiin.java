@@ -9,12 +9,15 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
@@ -64,13 +67,14 @@ public class VentanaLogiin extends JFrame {
 		panelSur.add(btnVolver);
 		
 		JButton btnAcceder = new JButton("ACCEDER");
-		btnAcceder.setForeground(Color.BLACK);
 		
 		panelSur.add(btnAcceder);
 		
 		JButton btnRegistrarse = new JButton("REGISTRARSE");
 		
 		panelSur.add(btnRegistrarse);
+		
+		JRadioButton admin = new JRadioButton("ADMIN");
 		
 		JPanel panelCentro = new JPanel();
 		contentPane.add(panelCentro, BorderLayout.CENTER);
@@ -93,6 +97,7 @@ public class VentanaLogiin extends JFrame {
 		dni = textDni.getText();
 		contraseña = textContraseña.getText();
 		//ACTION LISTENER
+		
 		btnVolver.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				volver();
@@ -101,28 +106,23 @@ public class VentanaLogiin extends JFrame {
 		btnAcceder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//PRIMERO COMPROBAR QUE LOS DATOS SON CORRECTOS
+				
 				dni = textDni.getText();
 				contraseña = (String) textContraseña.getText();
 				boolean correcto = BD.comprobarUsuarioExistente(dni, contraseña);
+				ArrayList<Cuenta> cuentas = BD.getCuentasDeUnUsuario(dni);
+				Cuenta c = BD.getCuentaConMayorSaldo(new Usuario(dni, cuentas));
+				if(admin.isSelected() && correcto) {
+					ventanaActual.dispose();
+				}
 				if(correcto) {
 					ventanaActual.dispose();
-					JFrame ventanaHome = new VentanaHome(new Cuenta(), new Usuario(dni));
+					JFrame ventanaHome = new VentanaHome(c, new Usuario(dni, cuentas));
 					ventanaHome.setVisible(true);
-				}else {
+				} else {
 					System.out.println("DNI O PIN INCORRECTO");
 				}
-				
 						
-					
-					
-				
-					
-					
-					
-					
-					
-					
-					
 				
 			}
 		});

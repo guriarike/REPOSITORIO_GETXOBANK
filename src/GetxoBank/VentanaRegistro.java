@@ -155,15 +155,16 @@ public class VentanaRegistro extends JFrame {
 		return correctoNombre;
 	}
 	public void crearUsuario() {
-		Usuario u = new Usuario(nombre, dni, contraseña, 0.0, año,  p, new ArrayList<Cuenta>());
-		guardarUsuarioEnElHashMapDeLaVentanaLogin(u);
+		Usuario u = new Usuario(textNombre.getText(), textDni.getText(), textContraseña.getText(), 0.0, año,  p, new ArrayList<Cuenta>());
+		BD.insertarUsuario(u);
 		System.out.println(u);
 		//Usuario u = new Usuario();
 		
 	}
 	public void llenarComboFechas(JComboBox<Integer> combo) {
 		// LLENAMOS EL COMBO BOX CON LOS ULTIMOS 100 AÑOS
-		int año = 2022;
+		// SIENDO LOS DEL 2004 LOS ÚLTIMOS EN SER MAYORES DE EDAD
+		int año = 2004;
 		int i = 0;
 		
 		for(i = 0; i<100;i++) {
@@ -171,10 +172,6 @@ public class VentanaRegistro extends JFrame {
 			combo.addItem(año);
 			
 		}
-		
-	}
-	public static void guardarUsuarioEnElHashMapDeLaVentanaLogin(Usuario u) {
-		BD.insertarUsuario(u);
 		
 	}
 	

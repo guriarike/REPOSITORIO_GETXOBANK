@@ -12,7 +12,7 @@ public class Main {
 		BD.borrarBD();
 		ArrayList<Usuario> us = new ArrayList<>();
 		us = BD.getUsuarios();
-		BD.rellenarBD();
+		if(us == null || us.isEmpty()) BD.rellenarBD();
 		System.out.println(BD.getUsuarios());
 
 	}

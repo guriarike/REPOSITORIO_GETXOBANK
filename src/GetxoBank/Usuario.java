@@ -37,9 +37,10 @@ public class Usuario {
 		this.provincia = provincia;
 	}
 
-	public Usuario(String dni) {
+	public Usuario(String dni, ArrayList<Cuenta> cuentas) {
 		super();
 		this.dni = dni;
+		this.cuentasUsuario = cuentas;
 	}
 
 	public String getNombre() {

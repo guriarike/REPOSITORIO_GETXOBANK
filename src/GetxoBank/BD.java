@@ -66,8 +66,6 @@ public class BD {
 				int añoNac = rs.getInt("añoNac");
 				String p = rs.getString("provincia");
 				ArrayList<Cuenta> aCuentas = getCuentasDeUnUsuario(dni);
-				
-				System.out.println(p);
 				usuarios.add( new Usuario ( nombre, dni, pin, saldoTotal, añoNac , Provincia.valueOf(p), aCuentas ) );
 				}
 			
@@ -249,7 +247,7 @@ public class BD {
 			
 			List<Integer> posiblesAños = new ArrayList<>();
 			
-			for (int i = 1922; i < 2023; i++) {
+			for (int i = 1930; i < 2005; i++) {
 				posiblesAños.add(i);
 				
 			}
@@ -259,8 +257,10 @@ public class BD {
 				String nombre = posiblesNombres.get(random.nextInt(posiblesNombres.size()));
 				String dni = i + posiblesLetras.get(random.nextInt(posiblesLetras.size()));
 				String pin = String.valueOf(random.nextInt(200) + 1000);
-				Double saldo = 0.0;
+				Double saldo = (double) random.nextInt(10000);
 				int año = posiblesAños.get(random.nextInt(posiblesAños.size()));
+				
+				System.out.println(saldo);
 				
 				int p = new Random().nextInt(Provincia.values().length);
 				Provincia pr = Provincia.values()[p];
@@ -299,7 +299,15 @@ public class BD {
 		return false;
 	}
 	
-	
+	public static Cuenta getCuentaConMayorSaldo(Usuario u) {
+		Cuenta c = u.getCuentasUsuario().get(0);
+		for (Cuenta cuenta : u.getCuentasUsuario()) {
+			if(cuenta.getSaldo() > c.getSaldo()) {
+				c = cuenta;
+			}
+		}
+		return c;
+	}
 	}
 	
 	
