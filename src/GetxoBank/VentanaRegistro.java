@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.ComboBoxModel;
@@ -60,7 +61,7 @@ public class VentanaRegistro extends JFrame {
 			
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(200, 100, 1000, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -104,7 +105,7 @@ public class VentanaRegistro extends JFrame {
 		JLabel lblAñoNacimiento = new JLabel("A\u00D1O DE  NACIMIENTO");
 		panelCentral.add(lblAñoNacimiento);
 		
-		JComboBox comboAño = new JComboBox<Integer>();
+		JComboBox<Integer> comboAño = new JComboBox<Integer>();
 		llenarComboFechas(comboAño);
 		
 		panelCentral.add(comboAño);
@@ -112,7 +113,7 @@ public class VentanaRegistro extends JFrame {
 		JLabel lblProvincia = new JLabel("PROVINCIA");
 		panelCentral.add(lblProvincia);
 		
-		JComboBox comboProvincia = new JComboBox();
+		JComboBox<Provincia> comboProvincia = new JComboBox<Provincia>();
 		comboProvincia.setModel(new DefaultComboBoxModel(Provincia.values()));
 		panelCentral.add(comboProvincia);
 		
@@ -155,8 +156,13 @@ public class VentanaRegistro extends JFrame {
 		return correctoNombre;
 	}
 	public void crearUsuario() {
-		Usuario u = new Usuario(textNombre.getText(), textDni.getText(), textContraseña.getText(), 0.0, año,  p, new ArrayList<Cuenta>());
+		ArrayList<Cuenta> aCuentas = new ArrayList<Cuenta>();
+		String tipoCuenta = JOptionPane.showInputDialog("Tipo de cuenta (NORMAL/AHORRO): ");
+		Cuenta c = new Cuenta(textDni.getText(), BD.getCuentas().get(BD.getCuentas().size()-1).getNumeroTarjeta() + 1, 0.0, TipoCuenta.valueOf(tipoCuenta));
+		aCuentas.add(c);
+		Usuario u = new Usuario(textNombre.getText(), textDni.getText(), textContraseña.getText(), 0.0, año,  p, aCuentas);
 		BD.insertarUsuario(u);
+		BD.insertarNuevaCuenta(c);
 		System.out.println(u);
 		//Usuario u = new Usuario();
 		

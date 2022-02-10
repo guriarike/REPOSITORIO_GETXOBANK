@@ -19,9 +19,7 @@ public class Usuario {
 		this.nombre = nom;
 		this.dni = dni;
 		this.pin = pin;
-		for (Cuenta cuenta : cuentasU) {
-			this.saldoTotal += cuenta.getSaldo();
-		}
+		this.saldoTotal = saldoTotal;
 		this.año_nac = añoNcto;
 		this.provincia = p;
 		this.cuentasUsuario = cuentasU;
@@ -37,10 +35,16 @@ public class Usuario {
 		this.provincia = provincia;
 	}
 
-	public Usuario(String dni, ArrayList<Cuenta> cuentas) {
+	public Usuario(String nombre, String dni, double saldoTotal,  ArrayList<Cuenta> cuentas) {
 		super();
 		this.dni = dni;
+		this.nombre = nombre;
+		this.saldoTotal = saldoTotal;
 		this.cuentasUsuario = cuentas;
+	}
+	
+	public Usuario() {
+		super();
 	}
 
 	public String getNombre() {

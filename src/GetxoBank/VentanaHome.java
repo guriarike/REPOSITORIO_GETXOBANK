@@ -8,16 +8,17 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import java.awt.event.*;
+import java.sql.SQLException;
 
 public class VentanaHome extends JFrame {
 
 	private static JFrame ventanaActual;
-	private static JFrame ventanaAnterior;
 	private static Usuario usuarioActual;
 	private static Cuenta cuentaActual;
 	private JPanel contentPane;
 	
 	JTable tabla;
+	DefaultTableModel modelo;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -38,7 +39,7 @@ public class VentanaHome extends JFrame {
 		cuentaActual = c;
 		tabla = new JTable();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(400, 300, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -52,18 +53,18 @@ public class VentanaHome extends JFrame {
 		panelCentral.add(panelIzq);
 		panelIzq.setLayout(new GridLayout(4, 1, 0, 0));
 
-		JLabel lblNombre = new JLabel("Hola ");
+		JLabel lblNombre = new JLabel("HOLA " + us.getNombre());
 		lblNombre.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panelIzq.add(lblNombre);
 
-		JLabel lblSaldo = new JLabel("500" + "€");
+		JLabel lblSaldo = new JLabel(c.getSaldo() + " €");
 		lblSaldo.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		panelIzq.add(lblSaldo);
 
 		JLabel lblUltOpe = new JLabel("\u00DAltimas operaciones:");
 		panelIzq.add(lblUltOpe);
 		
-		DefaultTableModel modelo = new DefaultTableModel();
+		modelo = new DefaultTableModel();
 		tabla = new JTable(modelo);
 		tabla.setToolTipText("");
 		
@@ -71,6 +72,7 @@ public class VentanaHome extends JFrame {
 		modelo.addColumn("Tipo");
 		modelo.addColumn("Cantidad");
 		modelo.addColumn("Fecha");
+		
 		
 		panelIzq.add(new JScrollPane(tabla), BorderLayout.CENTER);
 		
@@ -96,6 +98,16 @@ public class VentanaHome extends JFrame {
 		JButton btnCrearCuenta = new JButton("CREAR CUENTA");
 		btnCrearCuenta.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Cuenta cuenta = new Cuenta();
+				cuenta.setDni(cuentaActual.getDni());
+				cuenta.setNumeroTarjeta(BD.getCuentas().size()+1);
+				cuenta.setSaldo(0.0);
+				TipoCuenta tipo = TipoCuenta.valueOf(JOptionPane.showInputDialog("TIPO CUENTA (AHORRO/NORMAL)"));
+				cuenta.setTipo(tipo);
+				BD.insertarNuevaCuenta(cuenta);
+				ventanaActual.dispose();
+				VentanaHome ventanaHome = new VentanaHome(cuenta, usuarioActual);
+				ventanaHome.setVisible(true);
 			}
 		});
 		panelDer.add(btnCrearCuenta);
@@ -103,12 +115,32 @@ public class VentanaHome extends JFrame {
 		JButton btnCambiarCuenta = new JButton("CAMBIAR CUENTA");
 		btnCambiarCuenta.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				int nCuenta = Integer.valueOf(JOptionPane.showInputDialog("NÚMERO DE CUENTA: "));
+				Cuenta nuevaCuenta = BD.getCuentaEspecifica(nCuenta);
+				if(nuevaCuenta.getDni().equals(usuarioActual.getDni())) {
+					ventanaActual.dispose();
+					VentanaHome ventanaHome = new VentanaHome(nuevaCuenta, usuarioActual);
+					ventanaHome.setVisible(true);
+				} else {
+					JOptionPane.showMessageDialog(null, "NO TIENE NINGUNA CUENTA CON ESE NÚMERO", "error", JOptionPane.ERROR_MESSAGE);
+				}
+				
 			}
 		});
 		panelDer.add(btnCambiarCuenta);
 
 		JButton btnEnviarDinero = new JButton("ENVIAR DINERO");
 		panelDer.add(btnEnviarDinero);
+		btnEnviarDinero.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				ventanaActual.dispose();
+				VentanaEnviarDinero vEnviar = new VentanaEnviarDinero(cuentaActual, usuarioActual);
+				vEnviar.setVisible(true);
+			}
+		});
 
 		JButton btnIngresarDinero = new JButton("INGRESAR DINERO");
 		panelDer.add(btnIngresarDinero);
@@ -117,7 +149,7 @@ public class VentanaHome extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ventanaActual.dispose();
-				VentanaCajero vc = new VentanaCajero(cuentaActual, usuarioActual);
+				VentanaCajeroIngresar vc = new VentanaCajeroIngresar(cuentaActual, usuarioActual);
 				vc.setVisible(true);
 			}
 		});
@@ -129,7 +161,7 @@ public class VentanaHome extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ventanaActual.dispose();
-				VentanaCajero vc = new VentanaCajero(cuentaActual, usuarioActual);
+				VentanaCajeroSacar vc = new VentanaCajeroSacar(cuentaActual, usuarioActual);
 				vc.setVisible(true);
 				
 			}
@@ -137,6 +169,20 @@ public class VentanaHome extends JFrame {
 
 		JButton btnCambiarPin = new JButton("CAMBIAR PIN");
 		panelDer.add(btnCambiarPin);
+		btnCambiarPin.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String nuevoPin = JOptionPane.showInputDialog("PIN NUEVO: ");
+				try {
+					BD.cambiarPin(usuarioActual, nuevoPin);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 
 		JButton btnVolver = new JButton("VOLVER");
 		contentPane.add(btnVolver, BorderLayout.SOUTH);

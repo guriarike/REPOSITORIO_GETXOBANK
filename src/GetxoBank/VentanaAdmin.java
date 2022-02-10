@@ -13,14 +13,20 @@ import javax.swing.DefaultListModel;
 import javax.swing.JScrollPane;
 import java.awt.GridLayout;
 import java.lang.reflect.Array;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.JLabel;
+import javax.swing.JButton;
 
-public class VentanaAdmin {
+public class VentanaAdmin extends JFrame{
 
-	private JFrame frame;
+	private JFrame ventanaActual;
 	private ArrayList<Usuario> us;
+	private Connection con;
 
 	/**
 	 * Launch the application.
@@ -29,8 +35,8 @@ public class VentanaAdmin {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					VentanaAdmin window = new VentanaAdmin();
-					window.frame.setVisible(true);
+					VentanaAdmin frame = new VentanaAdmin();
+					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -38,34 +44,32 @@ public class VentanaAdmin {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
 	public VentanaAdmin() {
-		initialize();
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.X_AXIS));
+		
+		ventanaActual = this;
+		
+		
+		setBounds(100, 100, 455, 355);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
 		
 		JPanel panel_1 = new JPanel();
-		frame.getContentPane().add(panel_1);
+		getContentPane().add(panel_1);
 		
 		JList list = new JList();
 		panel_1.add(list);
 		DefaultListModel<Usuario> listmodel = new DefaultListModel<>();
+
 		
 		JPanel panel = new JPanel();
-		frame.getContentPane().add(panel);
-		panel.setLayout(new GridLayout(10, 0, 0, 0));
+		getContentPane().add(panel);
+		panel.setLayout(new GridLayout(11, 0, 0, 0));
 		
 		us = BD.getUsuarios();
+		
+		for (Usuario usuario : us) {
+			listmodel.addElement(usuario);
+		}
 		
 		Usuario mayorS = us.get(0);
 		int totalSaldo = 0;
@@ -140,6 +144,9 @@ public class VentanaAdmin {
 		JLabel lblNewLabel_9 = new JLabel("");
 		lblNewLabel_9.setText(String.valueOf(mayorC));
 		panel.add(lblNewLabel_9);
+		
+		JButton btnVolver = new JButton("VOLVER");
+		panel.add(btnVolver);
 		
 	}
 

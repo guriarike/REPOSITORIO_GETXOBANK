@@ -16,8 +16,7 @@ public class Cuenta {
 		this.tipo = tipo;
 	}
 	
-	public Cuenta(int numeroTarjeta) {
-		this.numeroTarjeta = numeroTarjeta;
+	public Cuenta() {
 	}
 	
 	
@@ -48,7 +47,7 @@ public class Cuenta {
 	
 	@Override
 	public String toString() {
-		return "Cuenta [nombre=" + dni + ", numeroTarjeta=" + numeroTarjeta + ", saldo=" + saldo + ", tipo=" + tipo
+		return "Cuenta [dni=" + dni + ", numeroTarjeta=" + numeroTarjeta + ", saldo=" + saldo + ", tipo=" + tipo
 				+ "]";
 	}
 	//METODOS

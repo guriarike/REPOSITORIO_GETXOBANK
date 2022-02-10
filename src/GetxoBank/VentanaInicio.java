@@ -50,7 +50,7 @@ public class VentanaInicio extends JFrame {
 	private void initialize() {
 		
 		ventanaActual = this;
-		ventanaActual.setBounds(100, 100, 650, 400);
+		ventanaActual.setBounds(300, 200, 650, 400);
 		ventanaActual.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		ventanaActual.getContentPane().setLayout(new BorderLayout(0, 0));
 		
@@ -78,11 +78,9 @@ public class VentanaInicio extends JFrame {
 		panel_1.add(lblNewLabel, BorderLayout.CENTER);
 		
 		JLabel lblNewLabel_1 = new JLabel("                     ");
-		lblNewLabel_1.setBackground(Color.ORANGE);
 		panel_1.add(lblNewLabel_1, BorderLayout.WEST);
 		
 		JLabel lblNewLabel_2 = new JLabel("                     ");
-		lblNewLabel_2.setBackground(Color.ORANGE);
 		panel_1.add(lblNewLabel_2, BorderLayout.EAST);
 		
 		logo = new ImageIcon(VentanaInicio.class.getResource("logo_small.png"));

@@ -20,7 +20,8 @@ public class BD {
 	private static Connection con;
 	private static Logger logger = Logger.getLogger( "BaseDatos" );
 	private static Random random;
-	protected static ArrayList<Usuario> us;
+	private static ArrayList<Usuario> us;
+	private static ArrayList<Cuenta> cu;
 	
 	public static boolean initBD(String nombreBD){
 		
@@ -34,6 +35,8 @@ public class BD {
 			statement.executeUpdate( sent );
 			String sent1 = "CREATE TABLE IF NOT EXISTS USUARIO (nom varchar(20), dni varchar(9) PRIMARY KEY, pin INTEGER(4), saldoTotal INTEGER, añoNac INTEGER(4) , provincia varchar(15));";
 			statement.executeUpdate( sent1 );
+			
+			
 			
 			return true;
 			
@@ -102,7 +105,7 @@ public class BD {
 		ArrayList<Cuenta> cuentas = getCuentas();
 		ArrayList<Cuenta> cuentasUsuario = new ArrayList<Cuenta>();
 		for (Cuenta cuenta : cuentas) {
-			if(cuenta.getDni() == dni) {
+			if(cuenta.getDni().equals(dni)) {
 				cuentasUsuario.add(cuenta);
 			}
 		}
@@ -114,13 +117,7 @@ public class BD {
 		try (Statement st = con.createStatement()){
 			String sent = "insert into USUARIO values ('" + u.getNombre() + "','" + u.getDni() + "','" + u.getPin() + "'," + u.getSaldoTotal() + ",'" + u.getAño_nac() + "','" + u.getProvincia() + "');";
 			logger.log( Level.INFO, "Statement: " + sent );
-			int insertados = st.executeUpdate( sent );
-			if (insertados!=1) return false;
-			ResultSet rs = st.getGeneratedKeys();
-			rs.next();
-			String pk = rs.getString( 2 );
-			u.setDni(pk);
-			st.close();
+			st.execute(sent);
 			return true;
 		} catch (Exception e) {
 			logger.log( Level.SEVERE, "Excepción", e );
@@ -129,16 +126,11 @@ public class BD {
 		
 	}
 	
-	public static boolean insertarNuevaCuenta(Cuenta c, Usuario u) {
+	public static boolean insertarNuevaCuenta(Cuenta c) {
 		try (Statement st = con.createStatement()) {
-			ArrayList<Usuario> usuarios = getUsuarios();
-			if(!usuarios.contains(u)) {
-				insertarUsuario(u);
-			}
-			if(c.getDni() != u.getDni()) return false;
 			String sent = "insert into CUENTA values('" + c.getDni() + "', " + c.getNumeroTarjeta() + ", " + c.getSaldo() + ", '"+ c.getTipo()+ "');";
 			int val = st.executeUpdate(sent);
-			logger.log(Level.INFO, val + "cuenta añadida");
+			logger.log(Level.INFO, val + " cuenta añadida");
 			st.close();
 			return true;
 		} catch (Exception e) {
@@ -170,7 +162,8 @@ public class BD {
 	public static void ingresarDinero(Cuenta c, double dinero) {
 		try (Statement st = con.createStatement()){
 			double saldoNuevo = c.getSaldo() + dinero;
-			String sent = "update cuenta set saldo = " + saldoNuevo + " where nombre = '" + c.getDni() + "' and nCuenta = " + c.getNumeroTarjeta() + ";";
+			String sent = "update cuenta set saldo = " + saldoNuevo + " where dni = '" + c.getDni() + "' and nCuenta = " + c.getNumeroTarjeta() + ";";
+			st.execute(sent);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -179,7 +172,8 @@ public class BD {
 	public static void sacarDinero(Cuenta c, double dinero) {
 		try (Statement st = con.createStatement()){
 			double saldoNuevo = c.getSaldo() - dinero;
-			String sent = "update cuenta set saldo = " + saldoNuevo + " where nombre = '" + c.getDni() + "' and nCuenta = " + c.getNumeroTarjeta() + ";";
+			String sent = "update cuenta set saldo = " + saldoNuevo + " where dni = '" + c.getDni() + "' and nCuenta = " + c.getNumeroTarjeta() + ";";
+			st.execute(sent);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -187,10 +181,12 @@ public class BD {
 	
 	public static void rellenarBD() {
 		us = new ArrayList<>();
-		try (Statement st = con.createStatement();){
+		cu = new ArrayList<>();
+		random = new Random();
+		ArrayList<String> dnis = new ArrayList<>();
+		try (Statement st = con.createStatement()){
+			//DATOS PARA USUARIOS
 			
-			//st.executeUpdate(sent);
-			random = new Random();
 			ArrayList<String> posiblesNombres = new ArrayList<>();
 			posiblesNombres.add("MARTA");
 			posiblesNombres.add("IÑIGO");
@@ -249,26 +245,43 @@ public class BD {
 			
 			for (int i = 1930; i < 2005; i++) {
 				posiblesAños.add(i);
-				
 			}
-			
-			
-			for (int i = 10000000; i < 10000050; i++) {
+			for (int i = 10000000; i < 10000020; i++) {
 				String nombre = posiblesNombres.get(random.nextInt(posiblesNombres.size()));
 				String dni = i + posiblesLetras.get(random.nextInt(posiblesLetras.size()));
-				String pin = String.valueOf(random.nextInt(9999));
-				Double saldo = (double) random.nextInt(10000);
+				String pin = String.valueOf(1000 + random.nextInt(8999));
+				double saldoTotal = 0.0;
 				int año = posiblesAños.get(random.nextInt(posiblesAños.size()));
-				
-				System.out.println(saldo);
-				
 				int p = new Random().nextInt(Provincia.values().length);
 				Provincia pr = Provincia.values()[p];
-				
-				String sent = "INSERT INTO USUARIO(nom, dni, pin, saldoTotal, añoNac, provincia) VALUES ('" + nombre.toUpperCase() + "', '" + dni + "', '" + pin + "', " + saldo + ", " + año + ", '"+ pr + "');";
-				st.execute(sent);
-				us.add(new Usuario(nombre, dni, pin, saldo, año, pr));
+				us.add(new Usuario(nombre, dni, pin, saldoTotal, año, pr));
+				dnis.add(dni);
 			}
+			
+			//DATOS PARA CUENTAS
+			
+			for (int j = 1000000000; j < 1000000030; j++) {
+				int numeroTarjeta = j;
+				String dniC = dnis.get(random.nextInt(dnis.size()));
+				double saldo = (double) random.nextInt(10000);
+				int tipo = new Random().nextInt(TipoCuenta.values().length);
+				TipoCuenta tipoCuenta = TipoCuenta.values()[tipo];
+				Cuenta c = new Cuenta(dniC, numeroTarjeta, saldo, tipoCuenta);
+				cu.add(c);
+				insertarNuevaCuenta(c);
+				System.out.println(c);
+			}
+			for (Usuario u : us) {
+				for (Cuenta c : cu) {
+					if(u.getDni().equals(c.getDni())) {
+						u.setSaldoTotal(u.getSaldoTotal() + c.getSaldo());
+					}
+					
+				}
+				insertarUsuario(u);
+				System.out.println(u);
+			}
+			
 			st.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -307,6 +320,40 @@ public class BD {
 			}
 		}
 		return c;
+	}
+	
+	public static Usuario getUsuarioEspecifico(String dni) {
+		us = getUsuarios();
+		for (Usuario usuario : us) {
+			if(usuario.getDni().equals(dni)) {
+				return usuario;
+			}
+		}
+		return null;
+	}
+	
+	public static Usuario getUsuarioEspecifico(Cuenta c) {
+		us = getUsuarios();
+		for (Usuario usuario : us) {
+			System.out.println(usuario.getCuentasUsuario());
+			for(Cuenta cuenta : usuario.getCuentasUsuario()) {
+				if(cuenta.equals(c)) {
+					return usuario;
+				}
+			}
+			
+		}
+		return null;
+	}
+	
+	public static Cuenta getCuentaEspecifica(int nCuenta) {
+		cu = getCuentas();
+		for (Cuenta cuenta  : cu) {
+			if(cuenta.getNumeroTarjeta() == nCuenta) {
+				return cuenta;
+			}
+		}
+		return null;
 	}
 }
 	

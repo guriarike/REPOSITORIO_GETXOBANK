@@ -20,8 +20,9 @@ import java.awt.Rectangle;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
-public class VentanaCajero extends JFrame {
+public class VentanaCajeroSacar extends JFrame {
 
 	private static JFrame ventanaActual;
 	private static JFrame ventanaAnterior;
@@ -35,7 +36,7 @@ public class VentanaCajero extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					VentanaCajero window = new VentanaCajero(cuentaActual, usuarioActual);
+					VentanaCajeroSacar window = new VentanaCajeroSacar(cuentaActual, usuarioActual);
 					window.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -47,7 +48,7 @@ public class VentanaCajero extends JFrame {
 	/**
 	 * Create the application.
 	 */
-	public VentanaCajero(Cuenta c, Usuario u) {
+	public VentanaCajeroSacar(Cuenta c, Usuario u) {
 
 		ventanaActual = this;
 		usuarioActual = u;
@@ -59,7 +60,7 @@ public class VentanaCajero extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
-		getxobank = new ImageIcon(VentanaCajero.class.getResource("logo_small.png"));
+		getxobank = new ImageIcon(VentanaCajeroSacar.class.getResource("logo_small.png"));
 		contentPane.setLayout(new GridLayout(4, 1, 0, 0));
 		
 		JPanel panel = new JPanel();
@@ -130,9 +131,15 @@ public class VentanaCajero extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				BD.ingresarDinero(c, Integer.valueOf(txtCantidad.getText()));
+				if(cuentaActual.getSaldo() < Integer.valueOf(txtCantidad.getText())) {
+					JOptionPane.showMessageDialog(null, "DINERO INSUFICIENTE EN LA CUENTA", "error", JOptionPane.ERROR_MESSAGE);
+				} else {
+				BD.sacarDinero(cuentaActual, Integer.valueOf(txtCantidad.getText()));
+				usuarioActual.setSaldoTotal(usuarioActual.getSaldoTotal() - Integer.valueOf(txtCantidad.getText()));
+				}
 				ventanaActual.dispose();
 				VentanaHome ventanaHome = new VentanaHome(cuentaActual, usuarioActual);
+				ventanaHome.modelo.addRow(new Object[] {null, "Sacar Dinero", Integer.valueOf(txtCantidad.getText()), System.currentTimeMillis()});
 				ventanaHome.setVisible(true);
 			}
 		});
@@ -156,7 +163,7 @@ public class VentanaCajero extends JFrame {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-					BD.ingresarDinero(c, Integer.valueOf(txtCantidad.getText()));
+					BD.ingresarDinero(cuentaActual, Integer.valueOf(txtCantidad.getText()));
 					System.out.println(c);
 				}
 				

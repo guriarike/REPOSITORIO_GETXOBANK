@@ -19,6 +19,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 
@@ -27,7 +29,8 @@ public class VentanaLogiin extends JFrame {
 	private JFrame ventanaActual;
 	private JPanel contentPane;
 	private JTextField textDni;
-	private String dni,contraseña;
+	private String dni, con;
+	private char[] contraseña;
 	private HashMap<String,Usuario> hmUsuarios;
 	private JPasswordField textContraseña;
 
@@ -53,7 +56,7 @@ public class VentanaLogiin extends JFrame {
 	public VentanaLogiin() {
 		ventanaActual = this;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(200, 100, 1000, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -63,18 +66,16 @@ public class VentanaLogiin extends JFrame {
 		contentPane.add(panelSur, BorderLayout.SOUTH);
 		
 		JButton btnVolver = new JButton("VOLVER");
-		
 		panelSur.add(btnVolver);
 		
 		JButton btnAcceder = new JButton("ACCEDER");
-		
 		panelSur.add(btnAcceder);
 		
 		JButton btnRegistrarse = new JButton("REGISTRARSE");
-		
 		panelSur.add(btnRegistrarse);
 		
 		JRadioButton admin = new JRadioButton("ADMIN");
+		panelSur.add(admin);
 		
 		JPanel panelCentro = new JPanel();
 		contentPane.add(panelCentro, BorderLayout.CENTER);
@@ -94,8 +95,6 @@ public class VentanaLogiin extends JFrame {
 		
 		textContraseña = new JPasswordField();
 		panelCentro.add(textContraseña);
-		dni = textDni.getText();
-		contraseña = textContraseña.getText();
 		//ACTION LISTENER
 		
 		btnVolver.addActionListener(new ActionListener() {
@@ -108,22 +107,77 @@ public class VentanaLogiin extends JFrame {
 				//PRIMERO COMPROBAR QUE LOS DATOS SON CORRECTOS
 				
 				dni = textDni.getText();
-				contraseña = (String) textContraseña.getText();
-				boolean correcto = BD.comprobarUsuarioExistente(dni, contraseña);
-				ArrayList<Cuenta> cuentas = BD.getCuentasDeUnUsuario(dni);
-				Cuenta c = BD.getCuentaConMayorSaldo(new Usuario(dni, cuentas));
-				if(admin.isSelected() && correcto) {
-					ventanaActual.dispose();
-				}
-				if(correcto) {
-					ventanaActual.dispose();
-					JFrame ventanaHome = new VentanaHome(c, new Usuario(dni, cuentas));
-					ventanaHome.setVisible(true);
+				contraseña = textContraseña.getPassword();
+				con = new String(contraseña);
+				boolean correcto = BD.comprobarUsuarioExistente(dni, con);
+				Usuario u = BD.getUsuarioEspecifico(dni);
+				System.out.println(u);
+				if(u == null) {
+					JOptionPane.showMessageDialog(null, "DNI O CONTRASEÑA INCORRECTAS", "error", JOptionPane.ERROR_MESSAGE);
+					VentanaLogiin.main(null);
 				} else {
-					System.out.println("DNI O PIN INCORRECTO");
+				Cuenta c = BD.getCuentaConMayorSaldo(u);
+				
+				if(admin.isSelected() && correcto && dni.equals("16096183R")) {
+					ventanaActual.dispose();
+					JFrame ventanaAdmin = new VentanaAdmin();
+					ventanaAdmin.setVisible(true);
+				} else {
+					if(correcto) {
+						ventanaActual.dispose();
+						JFrame ventanaHome = new VentanaHome(c, u);
+						ventanaHome.setVisible(true);
+					} else {
+						JOptionPane.showMessageDialog(null, "DNI O PIN INCORRECTOS", "error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
 				}
 						
 				
+			}
+		});
+		btnAcceder.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(e.getExtendedKeyCode() == KeyEvent.VK_ENTER) {
+					dni = textDni.getText();
+					contraseña = textContraseña.getPassword();
+					con = new String(contraseña);
+					
+					boolean correcto = BD.comprobarUsuarioExistente(dni, con);
+					ArrayList<Cuenta> cuentas = BD.getCuentasDeUnUsuario(dni);
+					Usuario u = BD.getUsuarioEspecifico(dni);
+					System.out.println(u);
+					Cuenta c = BD.getCuentaConMayorSaldo(u);
+					
+					if(admin.isSelected() && correcto && dni.equals("16096183R")) {
+						ventanaActual.dispose();
+						JFrame ventanaAdmin = new VentanaAdmin();
+						ventanaAdmin.setVisible(true);
+					} else {
+						if(correcto) {
+							ventanaActual.dispose();
+							JFrame ventanaHome = new VentanaHome(c, u);
+							ventanaHome.setVisible(true);
+						} else {
+							JOptionPane.showMessageDialog(null, "DNI O PIN INCORRECTOS", "error", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				}
 			}
 		});
 		btnRegistrarse.addActionListener(new ActionListener() {
@@ -131,6 +185,7 @@ public class VentanaLogiin extends JFrame {
 				abrirVentanaRegistro();
 			}
 		});
+		
 		
 		
 		}
@@ -154,38 +209,12 @@ public class VentanaLogiin extends JFrame {
 		
 		boolean verdad = Pattern.matches(dni,erDni);
 		if (verdad) {
-			return verdad;
-		}else {
-			JOptionPane.showMessageDialog(null, "El dni o la contraseña no son correctos", "¡¡ERROR!!", JOptionPane.ERROR_MESSAGE);
+			return true;
+		} else if (dni.equals("")){
+			return true;
+		} else {
+			JOptionPane.showMessageDialog(null, "El dni o la contraseña no son correctos", "ERROR", JOptionPane.ERROR_MESSAGE);
 			return false;
-		}
-		
-		
-		
-	}
-	public void comprobarSiEstaEnElHashMap() {
-	
-		for (String clave:hmUsuarios.keySet()) {
-			
-			Usuario valor = hmUsuarios.get(clave);
-			if ( valor.getDni() == dni) {
-				System.out.println("SI ESTA ");
-				
-			}else {
-				System.out.println("NO ESTA REGISTRADO");
-			}
-		}
-	}
-	public void comprobarSiLaContraseñaEstaBien() {
-		for (String clave:hmUsuarios.keySet()) {
-			
-			Usuario valor = hmUsuarios.get(clave);
-			if ( valor.getPin() == contraseña) {
-				System.out.println("CONTRASEÑA CORRECTA ");
-				
-			}else {
-				System.out.println("CONTRASEÑA INCORRECTA");
-			}
 		}
 	}
 	public void abrirVentanaRegistro() {
